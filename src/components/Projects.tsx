@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { Key, useState } from 'react';
 import { FaCode, FaExternalLinkAlt } from 'react-icons/fa';
@@ -19,7 +19,7 @@ const Projects = ({ data }: any) => {
 
   // get all different categories
   const categories = Array.from(
-    new Set(data.map(({ category }: { category: string }) => category))
+    new Set(data.map(({ category }: { category: string }) => category)),
   );
 
   const handleCategoryChange = (category: string) => {
@@ -33,7 +33,7 @@ const Projects = ({ data }: any) => {
         setFilteredData(data);
       } else {
         setFilteredData(
-          data.filter((project: any) => project.category === category)
+          data.filter((project: any) => project.category === category),
         );
       }
     }, 500);
@@ -69,7 +69,7 @@ const Projects = ({ data }: any) => {
           {filteredData.map(
             (
               { name, description, image, repoLink, demoLink }: any,
-              i: number
+              i: number,
             ) => (
               <motion.div
                 key={name}
@@ -83,17 +83,17 @@ const Projects = ({ data }: any) => {
               >
                 <Card
                   title={
-                    <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">
+                    <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary">
                       {name}
                     </span>
                   }
                   cardClassName="!p-5 border border-primary hover:md:scale-105 transition duration-300 ease-in-out"
                   noHighlight
                 >
-                  <p className="mt-2 mb-5 min-h-[72px] xl:min-h-[96px] hyphens-auto md:max-xl:text-sm">
+                  <p className="mt-2 mb-5 min-h-[72px] xl:min-h-24 hyphens-auto md:max-xl:text-sm">
                     {description}
                   </p>
-                  <div className="relative w-full aspect-[4/3]">
+                  <div className="relative w-full aspect-4/3">
                     <Image
                       src={urlForImage(image).url()}
                       fill
@@ -101,7 +101,7 @@ const Projects = ({ data }: any) => {
                       alt={name}
                     />
                   </div>
-                  <div className="flex justify-center mt-5 w-full justify-between">
+                  <div className="flex justify-between mt-5 w-full">
                     {!repoLink && !demoLink && (
                       <p className="text-sm">&nbsp;</p>
                     )}
@@ -126,7 +126,7 @@ const Projects = ({ data }: any) => {
                   </div>
                 </Card>
               </motion.div>
-            )
+            ),
           )}
         </div>
       </div>

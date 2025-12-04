@@ -1,3 +1,67 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #f58148;
+  --color-primary-50: #fef5ee;
+  --color-primary-100: #fee8d6;
+  --color-primary-200: #fbcead;
+  --color-primary-300: #f8ab79;
+  --color-primary-400: #f58148;
+  --color-primary-500: #f15b1e;
+  --color-primary-600: #e34113;
+  --color-primary-700: #bc2f12;
+  --color-primary-800: #962716;
+  --color-primary-900: #782316;
+
+  --color-secondary: #feb914;
+  --color-secondary-50: #ffe3a2;
+  --color-secondary-100: #ffdd8e;
+  --color-secondary-200: #fed165;
+  --color-secondary-300: #fec53d;
+  --color-secondary-400: #feb914;
+  --color-secondary-500: #d99901;
+  --color-secondary-600: #a17201;
+  --color-secondary-700: #694a00;
+  --color-secondary-800: #312300;
+  --color-secondary-900: #000000;
+
+  --color-light: #edf2f7;
+  --color-dark: #222831;
+}
+
+@keyframes gradient {
+  0% {
+    background-size: 300%;
+    background-position: left;
+  }
+  100% {
+    background-size: 300%;
+    background-position: right;
+  }
+}
+
+@keyframes tilt {
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.69deg);
+  }
+  75% {
+    transform: rotate(-0.69deg);
+  }
+}
+
+@layer utilities {
+  .animate-gradient {
+    animation: gradient 10s infinite alternate;
+  }
+
+  .animate-tilt {
+    animation: tilt 10s infinite linear;
+  }
+}

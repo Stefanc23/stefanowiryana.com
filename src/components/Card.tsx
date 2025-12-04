@@ -24,7 +24,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <div className="w-full flex items-stretch relative group">
       {!noHighlight && (
-        <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-br from-primary to-secondary blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
+        <div className="absolute -inset-0.5 rounded-lg bg-linear-to-br from-primary to-secondary blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
       )}
       <div
         className={`w-full relative p-8 rounded-lg bg-light dark:bg-dark flex flex-col ${cardClassName}`}

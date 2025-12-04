@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 import ExperienceCard from '@/components/ExperienceCard';
 import Section from '@/components/Section';
@@ -37,7 +37,7 @@ const Experience = ({ data }: any) => {
                 description,
                 employmentType,
               }: any,
-              i: number
+              i: number,
             ) => (
               <motion.li
                 key={i}
@@ -53,7 +53,7 @@ const Experience = ({ data }: any) => {
                   detail={description}
                 />
               </motion.li>
-            )
+            ),
           )}
         </ol>
       </div>

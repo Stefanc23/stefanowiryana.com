@@ -20,7 +20,7 @@ const ThemeSwitcher = () => {
     >
       {theme === 'dark' && mounted ? (
         <button
-          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg"
+          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg cursor-pointer"
           onClick={() => setTheme('light')}
           aria-label="Switch to light mode"
         >
@@ -28,7 +28,7 @@ const ThemeSwitcher = () => {
         </button>
       ) : (
         <button
-          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg"
+          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg cursor-pointer"
           onClick={() => setTheme('dark')}
           aria-label="Switch to dark mode"
         >

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import React from 'react';
 
 import { staggerContainer, textVariant } from '@/utils/motions';
@@ -34,7 +34,7 @@ const Section: React.FC<SectionProps> = ({
     >
       {!isHero && (
         <motion.div variants={textVariant()} className="text-left">
-          <p className="text-md md:text-xl 2xl:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary leading-wider">
+          <p className="text-md md:text-xl 2xl:text-2xl font-bold text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary leading-wider">
             {overline}
           </p>
           <h1 className="text-3xl md:text-5xl 2xl:text-6xl">{title}</h1>

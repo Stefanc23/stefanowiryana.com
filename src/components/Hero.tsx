@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { FaFilePdf } from 'react-icons/fa';
 
 import Button from '@/components/Button';
@@ -26,7 +26,7 @@ const Hero = ({ tagline, resumeUrl }: any) => {
           variants={fadeIn('up', 'spring', 0.1, 0.5)}
         >
           My Name is&nbsp;
-          <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">
+          <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary">
             Stefano
           </span>
         </motion.h1>

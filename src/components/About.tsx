@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { FiCheck } from 'react-icons/fi';
 
@@ -44,7 +44,7 @@ const About = ({ data }: any) => {
           className="relative flex justify-center group"
           variants={fadeIn('up', 'spring', 0.75, 1.25)}
         >
-          <div className="absolute w-[250px] h-[250px] md:w-[250px] md:h-[375px] rounded-full md:rounded-lg bg-gradient-to-br from-primary to-secondary blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
+          <div className="absolute w-[250px] h-[250px] md:w-[250px] md:h-[375px] rounded-full md:rounded-lg bg-linear-to-br from-primary to-secondary blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
           <div className="relative">
             <Image
               className="w-[250px] h-[250px] md:w-[250px] md:h-[375px] rounded-full md:rounded-lg"
@@ -69,8 +69,8 @@ const About = ({ data }: any) => {
         <div className="mt-3 w-full grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-8">
           {skills.map(
             (
-              { title, items }: { title: string; items: Array<string> },
-              i: number
+              { title, items }: { title: string; items: string[] },
+              i: number,
             ) => (
               <motion.div
                 className="flex items-stretch"
@@ -95,7 +95,7 @@ const About = ({ data }: any) => {
                   ))}
                 </Card>
               </motion.div>
-            )
+            ),
           )}
         </div>
       </div>

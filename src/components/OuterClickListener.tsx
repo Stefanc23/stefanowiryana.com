@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from 'react';
  * Hook that handle clicks outside of the passed ref
  */
 const useOuterClickListener = (
-  ref: React.RefObject<HTMLInputElement>,
-  action: () => void
+  ref: React.RefObject<HTMLInputElement | null>,
+  action: () => void,
 ) => {
   useEffect(() => {
     /**
