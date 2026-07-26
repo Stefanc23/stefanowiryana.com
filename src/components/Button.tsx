@@ -1,33 +1,26 @@
 import type { ComponentPropsWithoutRef } from 'react';
 
-export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
+export interface ButtonProps extends ComponentPropsWithoutRef<'a'> {
   variant?: 'solid' | 'outline';
-  highlight?: boolean;
 }
 
 const Button = ({
   variant = 'solid',
   children,
-  className,
-  highlight = false,
+  className = '',
   ...rest
 }: ButtonProps) => {
+  const baseClass =
+    'inline-flex min-h-11 items-center justify-center rounded-xl px-5 text-sm font-semibold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary';
+  const variantClass =
+    variant === 'solid'
+      ? 'bg-light text-dark shadow-[0_12px_30px_rgba(245,247,250,0.12)] hover:bg-light/85'
+      : 'border border-light/20 bg-light/5 text-light hover:border-light/45 hover:bg-light/10';
+
   return (
-    <div className="relative group">
-      {highlight && (
-        <div className="absolute -inset-1 rounded-lg bg-linear-to-br from-primary to-secondary blur opacity-75 md:opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
-      )}
-      <button
-        className={`relative text-sm md:text-lg rounded-sm cursor-pointer min-w-[120px] w-full px-4 py-1.5 h-8 md:h-12 flex justify-center items-center ${
-          variant === 'solid'
-            ? 'bg-primary text-dark hover:bg-linear-to-br hover:from-primary hover:to-secondary'
-            : 'bg-transparent text-primary border-2 border-primary hover:bg-secondary-300/50 hover:dark:bg-secondary-800/50'
-        } ${className}`}
-        {...rest}
-      >
-        {children}
-      </button>
-    </div>
+    <a className={`${baseClass} ${variantClass} ${className}`} {...rest}>
+      {children}
+    </a>
   );
 };
 

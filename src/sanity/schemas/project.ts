@@ -16,6 +16,9 @@ const project = {
       options: {
         list: [
           { title: 'Web', value: 'Web' },
+          { title: 'Security', value: 'Security' },
+          { title: 'Cloud', value: 'Cloud' },
+          { title: 'Product', value: 'Product' },
           { title: 'Mobile', value: 'Mobile' },
           { title: 'Other', value: 'Other' },
         ],
@@ -33,6 +36,17 @@ const project = {
       title: 'Image',
       type: 'image',
       required: true,
+    },
+    {
+      name: 'impact',
+      title: 'Impact',
+      type: 'text',
+    },
+    {
+      name: 'technologies',
+      title: 'Technologies',
+      type: 'array',
+      of: [{ type: 'string' }],
     },
     {
       name: 'repoLink',

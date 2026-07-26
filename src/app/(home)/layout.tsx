@@ -1,22 +1,49 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Metadata } from 'next';
-import { Quicksand } from 'next/font/google';
+import type { Metadata } from 'next';
 
 import '@/app/globals.css';
 
 import Providers from '@/app/providers';
+import CursorGlow from '@/components/CursorGlow';
+import FireBackground from '@/components/FireBackground';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-
-const quicksand = Quicksand({
-  subsets: ['latin-ext'],
-});
+import ScrollToTop from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
-  title: "Stefano's Portfolio Website",
+  metadataBase: new URL('https://stefanowiryana.com'),
+  title: {
+    default: 'Stefano Wiryana | Security Solution Engineer',
+    template: '%s | Stefano Wiryana',
+  },
   description:
-    'Hi! My name is Stefano, a software developer, and this is my portfolio website.',
+    'Security Solution Engineer and web developer bridging security architecture, customer-facing consulting, and hands-on software delivery.',
+  authors: [{ name: 'Stefano Christian Wiryana' }],
+  creator: 'Stefano Christian Wiryana',
+  icons: {
+    apple: [{ url: '/apple-touch-icon-sw.png', sizes: '180x180' }],
+    icon: [
+      { url: '/favicon-sw-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-sw-32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    shortcut: ['/favicon-sw.ico'],
+  },
+  openGraph: {
+    title: 'Stefano Wiryana | Security Solution Engineer',
+    description:
+      'A premium one-page portfolio for security architecture, solution engineering, and web development work.',
+    url: 'https://stefanowiryana.com',
+    siteName: 'Stefano Wiryana',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stefano Wiryana | Security Solution Engineer',
+    description:
+      'Security architecture, customer-facing technical consulting, and hands-on web development.',
+  },
 };
 
 export default function RootLayout({
@@ -25,39 +52,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth!" suppressHydrationWarning>
-      <head>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
-        <link rel="manifest" href="/site.webmanifest" />
-      </head>
-      <body
-        className={`bg-light dark:bg-dark selection:bg-primary selection:text-light dark:selection:text-dark ${quicksand.className}`}
-      >
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className="font-sans">
         <Providers>
-          <div className="relative">
-            <div
-              id="top"
-              className="absolute top-0 left-0 w-full h-3 bg-linear-to-r from-primary to-secondary animate-gradient"
-            ></div>
+          <div className="relative min-h-screen">
+            <FireBackground />
+            <CursorGlow />
             <Header />
-            <main>{children}</main>
+            <main id="top" className="relative z-10">
+              {children}
+            </main>
             <Footer />
+            <ScrollToTop />
           </div>
         </Providers>
         <Analytics />

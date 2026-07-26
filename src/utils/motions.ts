@@ -1,7 +1,9 @@
-export type MotionDirection = 'left' | 'right' | 'up' | 'down';
-export type MotionType = 'spring' | 'tween' | 'just';
+import type { Variants } from 'motion/react';
 
-export const textVariant = (delay = 0) => {
+export type MotionDirection = 'left' | 'right' | 'up' | 'down';
+export type MotionType = 'spring' | 'tween';
+
+export const textVariant = (delay = 0): Variants => {
   return {
     hidden: {
       y: -50,
@@ -23,8 +25,8 @@ export const fadeIn = (
   direction: MotionDirection,
   type: MotionType,
   delay = 0,
-  duration = 1.25
-) => {
+  duration = 1.25,
+): Variants => {
   return {
     hidden: {
       x: direction === 'left' ? 100 : direction === 'right' ? -100 : 0,
@@ -45,7 +47,7 @@ export const fadeIn = (
   };
 };
 
-export const zoomIn = (delay = 0, duration = 1.25) => {
+export const zoomIn = (delay = 0, duration = 1.25): Variants => {
   return {
     hidden: {
       scale: 0,
@@ -68,8 +70,8 @@ export const slideIn = (
   direction: MotionDirection,
   type: MotionType,
   delay: number,
-  duration: number
-) => {
+  duration: number,
+): Variants => {
   return {
     hidden: {
       x: direction === 'left' ? '-100%' : direction === 'right' ? '100%' : 0,
@@ -88,7 +90,10 @@ export const slideIn = (
   };
 };
 
-export const staggerContainer = (staggerChildren = 0.1, delay = 0) => {
+export const staggerContainer = (
+  staggerChildren = 0.1,
+  delay = 0,
+): Variants => {
   return {
     hidden: {},
     show: {

@@ -4,64 +4,169 @@
 
 @theme {
   --color-primary: #f58148;
-  --color-primary-50: #fef5ee;
-  --color-primary-100: #fee8d6;
-  --color-primary-200: #fbcead;
-  --color-primary-300: #f8ab79;
+  --color-primary-50: #fff5ef;
+  --color-primary-100: #ffe6d6;
+  --color-primary-200: #ffc8a7;
+  --color-primary-300: #f9a06e;
   --color-primary-400: #f58148;
-  --color-primary-500: #f15b1e;
-  --color-primary-600: #e34113;
-  --color-primary-700: #bc2f12;
-  --color-primary-800: #962716;
-  --color-primary-900: #782316;
+  --color-primary-500: #e76930;
+  --color-primary-600: #ba4d22;
+  --color-primary-700: #8f391b;
+  --color-primary-800: #622813;
+  --color-primary-900: #3d170a;
 
-  --color-secondary: #feb914;
-  --color-secondary-50: #ffe3a2;
-  --color-secondary-100: #ffdd8e;
-  --color-secondary-200: #fed165;
-  --color-secondary-300: #fec53d;
-  --color-secondary-400: #feb914;
-  --color-secondary-500: #d99901;
-  --color-secondary-600: #a17201;
-  --color-secondary-700: #694a00;
-  --color-secondary-800: #312300;
-  --color-secondary-900: #000000;
+  --color-secondary: #d9b875;
+  --color-secondary-50: #fcf7ed;
+  --color-secondary-100: #f4e5c3;
+  --color-secondary-200: #e7cc8d;
+  --color-secondary-300: #d6b166;
+  --color-secondary-400: #c9a15c;
+  --color-secondary-500: #a97f3c;
+  --color-secondary-600: #805d2d;
+  --color-secondary-700: #604524;
+  --color-secondary-800: #3d2d1a;
+  --color-secondary-900: #20170f;
 
-  --color-light: #edf2f7;
-  --color-dark: #222831;
+  --color-light: #f5f7fa;
+  --color-dark: #0b0d12;
+  --color-obsidian: #12151c;
+  --color-steel: #a6afbd;
+  --color-blood: #8e2424;
+  --font-serif:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
 }
 
-@keyframes gradient {
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #0b0d12;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #f5f7fa;
+  background:
+    radial-gradient(
+      circle at 76% 8%,
+      rgba(245, 129, 72, 0.2),
+      transparent 30rem
+    ),
+    radial-gradient(
+      circle at 15% 70%,
+      rgba(217, 184, 117, 0.08),
+      transparent 28rem
+    ),
+    #0b0d12;
+}
+
+.light {
+  --color-light: #15181f;
+  --color-dark: #f7f8fb;
+  --color-obsidian: #ffffff;
+  --color-steel: #566170;
+}
+
+.light html,
+html.light {
+  background: #f7f8fb;
+}
+
+.light body {
+  color: #15181f;
+  background:
+    radial-gradient(
+      circle at 76% 8%,
+      rgba(245, 129, 72, 0.14),
+      transparent 30rem
+    ),
+    radial-gradient(
+      circle at 15% 70%,
+      rgba(217, 184, 117, 0.1),
+      transparent 28rem
+    ),
+    #f7f8fb;
+}
+
+.light .fire-field {
+  opacity: 0.35;
+}
+
+::selection {
+  color: #0b0d12;
+  background: #d9b875;
+}
+
+@keyframes ember-rise {
   0% {
-    background-size: 300%;
-    background-position: left;
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.7);
+  }
+  18%,
+  80% {
+    opacity: var(--ember-opacity, 0.8);
   }
   100% {
-    background-size: 300%;
-    background-position: right;
+    opacity: 0;
+    transform: translate3d(var(--ember-drift, 18px), -115vh, 0) scale(1.35);
   }
 }
 
-@keyframes tilt {
+.fire-field {
+  background:
+    radial-gradient(
+      circle at 50% 115%,
+      rgba(245, 129, 72, 0.24),
+      transparent 35rem
+    ),
+    radial-gradient(
+      circle at 88% 54%,
+      rgba(245, 129, 72, 0.1),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 9% 78%,
+      rgba(217, 184, 117, 0.07),
+      transparent 24rem
+    );
+}
+
+@keyframes pulse-line {
   0%,
-  50%,
   100% {
-    transform: rotate(0deg);
+    opacity: 0.18;
   }
-  25% {
-    transform: rotate(0.69deg);
+  50% {
+    opacity: 0.55;
   }
-  75% {
-    transform: rotate(-0.69deg);
+}
+
+@keyframes forge-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
 @layer utilities {
-  .animate-gradient {
-    animation: gradient 10s infinite alternate;
+  .text-balance {
+    text-wrap: balance;
   }
 
-  .animate-tilt {
-    animation: tilt 10s infinite linear;
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .etched-border {
+    border: 1px solid rgba(245, 247, 250, 0.1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 14px 48px rgba(0, 0, 0, 0.22);
   }
 }

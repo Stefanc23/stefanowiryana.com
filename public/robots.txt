@@ -4,7 +4,7 @@ Allow: /
 Disallow: /studio
 
 # Host
-Host: https://stfn.vercel.app
+Host: https://stefanowiryana.com
 
 # Sitemaps
-Sitemap: https://stfn.vercel.app/sitemap.xml
+Sitemap: https://stefanowiryana.com/sitemap.xml

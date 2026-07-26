@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 
 module.exports = {
-  siteUrl: 'https://stfn.vercel.app',
+  siteUrl: 'https://stefanowiryana.com',
   generateRobotsTxt: true,
   exclude: ['/studio'],
   robotsTxtOptions: {

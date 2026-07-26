@@ -9,18 +9,22 @@ const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
+    const animationFrame = window.requestAnimationFrame(() => {
+      setMounted(true);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, []);
 
   return (
     <div
-      className={`flex items-center text-primary hover:text-secondary transition-colors text-sm md:text-xl ${
+      className={`flex items-center text-primary hover:text-secondary transition-colors ${
         !mounted && 'invisible'
       }`}
     >
       {theme === 'dark' && mounted ? (
         <button
-          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg cursor-pointer"
+          className="grid size-9 place-items-center rounded-lg border border-primary/55 text-base cursor-pointer hover:border-secondary"
           onClick={() => setTheme('light')}
           aria-label="Switch to light mode"
         >
@@ -28,7 +32,7 @@ const ThemeSwitcher = () => {
         </button>
       ) : (
         <button
-          className="border border-primary hover:border-secondary p-1 md:p-2 rounded-lg cursor-pointer"
+          className="grid size-9 place-items-center rounded-lg border border-primary/55 text-base cursor-pointer hover:border-secondary"
           onClick={() => setTheme('dark')}
           aria-label="Switch to dark mode"
         >

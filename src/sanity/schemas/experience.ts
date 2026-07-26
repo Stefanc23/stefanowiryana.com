@@ -53,6 +53,24 @@ const experience = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'summary',
+      title: 'Summary',
+      type: 'text',
+      description: 'Optional concise summary used by the portfolio timeline.',
+    },
+    {
+      name: 'highlights',
+      title: 'Highlights',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'focusAreas',
+      title: 'Focus Areas',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
   ],
 };
 
