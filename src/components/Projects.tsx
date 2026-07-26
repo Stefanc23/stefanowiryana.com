@@ -1,135 +1,127 @@
 'use client';
 
 import { motion } from 'motion/react';
-import Image from 'next/image';
-import { Key, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FaCode, FaExternalLinkAlt } from 'react-icons/fa';
 
-import Card from '@/components/Card';
-import PillButton from '@/components/PillButton';
 import Section from '@/components/Section';
-import UnstyledLink from '@/components/UnstyledLink';
-import { urlForImage } from '@/sanity/lib/image';
+import type { Project } from '@/types/content';
 import { fadeIn } from '@/utils/motions';
 
-const Projects = ({ data }: any) => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [filteredData, setFilteredData] = useState(data);
-  const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
+interface ProjectsProps {
+  data: Project[];
+}
 
-  // get all different categories
-  const categories = Array.from(
-    new Set(data.map(({ category }: { category: string }) => category)),
+const Projects = ({ data }: ProjectsProps) => {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const categories = useMemo(
+    () => [
+      'All',
+      ...Array.from(new Set(data.map((project) => project.category))),
+    ],
+    [data],
   );
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setAnimateCard({ y: 100, opacity: 0 });
-
-    setTimeout(() => {
-      setAnimateCard({ y: 0, opacity: 1 });
-
-      if (category === 'all') {
-        setFilteredData(data);
-      } else {
-        setFilteredData(
-          data.filter((project: any) => project.category === category),
-        );
-      }
-    }, 500);
+  const filteredProjects =
+    selectedCategory === 'All'
+      ? data
+      : data.filter((project) => project.category === selectedCategory);
+  const cardTransition = {
+    duration: 0.52,
+    ease: [0.22, 1, 0.36, 1] as const,
   };
 
   return (
-    <Section id="projects" title="Showcase of My Work" overline="Projects">
-      <div className="px-4 mx-auto w-full max-w-[360px] md:max-w-none mt-20">
-        <motion.div
-          className="flex justify-center w-full items-center"
-          variants={fadeIn('down', 'spring', 0.25)}
-        >
-          <PillButton
-            variant={selectedCategory === 'all' ? 'solid' : 'outline'}
-            onClick={() => handleCategoryChange('all')}
-            disabled={selectedCategory === 'all'}
-          >
-            All
-          </PillButton>
-          {categories.map((category) => (
-            <PillButton
-              key={category as Key}
-              variant={selectedCategory === category ? 'solid' : 'outline'}
-              onClick={() => handleCategoryChange(category as string)}
-              disabled={selectedCategory === category}
-              className="ml-3"
+    <Section
+      id="projects"
+      eyebrow="Projects"
+      title="Selected work."
+      intro="Security thinking, product clarity, and web craft."
+    >
+      <motion.div
+        className="mb-8 flex gap-2 overflow-x-auto pb-1"
+        variants={fadeIn('up', 'spring', 0, 0.4)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        {categories.map((category) => {
+          const isSelected = category === selectedCategory;
+          return (
+            <button
+              key={category}
+              type="button"
+              onClick={() => setSelectedCategory(category)}
+              aria-pressed={isSelected}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${isSelected ? 'bg-light text-dark' : 'border border-light/15 bg-light/[0.035] text-light/65 hover:border-light/35 hover:text-light'}`}
             >
-              {category as string}
-            </PillButton>
-          ))}
-        </motion.div>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8">
-          {filteredData.map(
-            (
-              { name, description, image, repoLink, demoLink }: any,
-              i: number,
-            ) => (
-              <motion.div
-                key={name}
-                initial={{ y: 100, opacity: 0 }}
-                transition={{
-                  delay: i * 0.1,
-                  ease: 'easeOut',
-                }}
-                whileInView={animateCard}
-                viewport={{ once: true }}
-              >
-                <Card
-                  title={
-                    <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary">
-                      {name}
-                    </span>
-                  }
-                  cardClassName="!p-5 border border-primary hover:md:scale-105 transition duration-300 ease-in-out"
-                  noHighlight
-                >
-                  <p className="mt-2 mb-5 min-h-[72px] xl:min-h-24 hyphens-auto md:max-xl:text-sm">
-                    {description}
-                  </p>
-                  <div className="relative w-full aspect-4/3">
-                    <Image
-                      src={urlForImage(image).url()}
-                      fill
-                      className="rounded-lg"
-                      alt={name}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-5 w-full">
-                    {!repoLink && !demoLink && (
-                      <p className="text-sm">&nbsp;</p>
-                    )}
-                    {repoLink && (
-                      <UnstyledLink
-                        href={repoLink}
-                        className="flex justify-center items-center text-sm text-primary hover:text-secondary hover-underline"
+              {category}
+            </button>
+          );
+        })}
+      </motion.div>
+
+      <motion.div key={selectedCategory} className="grid gap-4 md:grid-cols-2">
+        {filteredProjects.map((project) => (
+          <motion.article
+            key={project.name}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={cardTransition}
+            className="etched-border group flex min-h-72 flex-col justify-between rounded-2xl bg-light/[0.035] p-6 transition-colors duration-300 hover:-translate-y-1 hover:border-primary/45 sm:p-7"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-200">
+                  {project.category}
+                </span>
+                {(project.repoLink || project.demoLink) && (
+                  <div className="flex gap-3 text-light/55">
+                    {project.repoLink && (
+                      <a
+                        href={project.repoLink}
+                        aria-label={`View ${project.name} source`}
+                        className="transition hover:text-light"
                       >
-                        See Code
-                        <FaCode className="ml-2 text-lg" />
-                      </UnstyledLink>
+                        <FaCode aria-hidden />
+                      </a>
                     )}
-                    {demoLink && (
-                      <UnstyledLink
-                        href={demoLink}
-                        className="flex justify-center items-center text-sm text-primary hover:text-secondary hover-underline"
+                    {project.demoLink && (
+                      <a
+                        href={project.demoLink}
+                        aria-label={`Open ${project.name} demo`}
+                        className="transition hover:text-light"
                       >
-                        See Demo
-                        <FaExternalLinkAlt className="ml-2 text-lg" />
-                      </UnstyledLink>
+                        <FaExternalLinkAlt aria-hidden />
+                      </a>
                     )}
                   </div>
-                </Card>
-              </motion.div>
-            ),
-          )}
-        </div>
-      </div>
+                )}
+              </div>
+              <h3 className="mt-8 text-2xl font-semibold tracking-tight text-light sm:text-3xl">
+                {project.name}
+              </h3>
+              <p className="mt-3 max-w-lg leading-7 text-light/65">
+                {project.description}
+              </p>
+            </div>
+            <div className="mt-8">
+              <p className="border-l-2 border-primary/70 pl-3 text-sm leading-6 text-light/55">
+                {project.impact}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {project.technologies.map((technology) => (
+                  <span
+                    key={technology}
+                    className="rounded-md bg-light/[0.07] px-2.5 py-1 text-xs text-light/60"
+                  >
+                    {technology}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.article>
+        ))}
+      </motion.div>
     </Section>
   );
 };

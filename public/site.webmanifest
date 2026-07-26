@@ -1,1 +1,19 @@
-{"name":"Stefano's Portfolio Website","short_name":"STFN","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "Stefano Wiryana | Security Solution Engineer",
+  "short_name": "Stefano Wiryana",
+  "icons": [
+    {
+      "src": "/android-sw-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-sw-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#222831",
+  "background_color": "#222831",
+  "display": "standalone"
+}

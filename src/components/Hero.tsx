@@ -2,69 +2,90 @@
 
 import { motion } from 'motion/react';
 import { FaFilePdf } from 'react-icons/fa';
+import { HiArrowRight } from 'react-icons/hi';
 
 import Button from '@/components/Button';
-import Section from '@/components/Section';
 import { fadeIn } from '@/utils/motions';
 
-const Hero = ({ tagline, resumeUrl }: any) => {
+const Hero = () => {
   return (
-    <Section
-      id="hero"
-      className="min-h-screen flex flex-col justify-center md:justify-start lg:flex-row lg:-translate-y-24 lg:transform"
-      isHero
+    <section
+      className="relative isolate flex min-h-[calc(100svh-4.5rem)] items-center overflow-hidden px-5 py-24 sm:px-8 md:min-h-[calc(100svh-5.25rem)] lg:px-10"
+      aria-labelledby="hero-title"
     >
-      <article className="flex flex-col justify-center lg:w-2/3">
-        <motion.h2
-          className="text-2xl md:text-4xl 2xl:text-5xl font-semibold leading-wide"
-          variants={fadeIn('up', 'spring', 0, 0.5)}
-        >
-          Hi!
-        </motion.h2>
-        <motion.h1
-          className="mt-3 text-3xl md:text-5xl 2xl:text-6xl font-bold leading-wide"
-          variants={fadeIn('up', 'spring', 0.1, 0.5)}
-        >
-          My Name is&nbsp;
-          <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary">
-            Stefano
-          </span>
-        </motion.h1>
-        <motion.p
-          className="mt-4 max-w-4xl text-gray-700 dark:text-gray-200 md:mt-6 md:text-lg 2xl:text-xl"
-          variants={fadeIn('up', 'spring', 0.2, 0.5)}
-        >
-          {tagline}
-        </motion.p>
-        <motion.ul
-          className="mt-10 flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-8"
-          variants={fadeIn('up', 'spring', 0.3, 0.5)}
-        >
-          <li>
-            <Button
-              variant="solid"
-              highlight
-              onClick={() => {
-                window.open('#projects', '_self');
-              }}
-            >
-              See my work
+      <div className="relative mx-auto grid w-full max-w-7xl gap-16 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div className="max-w-4xl">
+          <motion.p
+            className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary-200"
+            variants={fadeIn('up', 'spring', 0, 0.45)}
+            initial="hidden"
+            animate="show"
+          >
+            Security Solution Engineer / Web Developer
+          </motion.p>
+          <motion.h1
+            id="hero-title"
+            className="text-balance text-5xl font-semibold leading-[0.95] tracking-tight text-light sm:text-7xl lg:text-8xl"
+            variants={fadeIn('up', 'spring', 0.08, 0.5)}
+            initial="hidden"
+            animate="show"
+          >
+            Make security clear.
+          </motion.h1>
+          <motion.p
+            className="mt-6 max-w-xl text-pretty text-lg leading-8 text-light/65 sm:text-xl"
+            variants={fadeIn('up', 'spring', 0.16, 0.5)}
+            initial="hidden"
+            animate="show"
+          >
+            Architecture, discovery, and software built for trust.
+          </motion.p>
+          <motion.div
+            className="mt-9 flex flex-wrap gap-3"
+            variants={fadeIn('up', 'spring', 0.24, 0.5)}
+            initial="hidden"
+            animate="show"
+          >
+            <Button href="#projects">
+              View work <HiArrowRight className="ml-2" aria-hidden />
             </Button>
-          </li>
-          <li>
             <Button
+              href="/resume"
+              target="_blank"
+              rel="noreferrer"
               variant="outline"
-              onClick={() => {
-                window.open(resumeUrl, '_blank');
-              }}
             >
-              <FaFilePdf />
-              &nbsp;Download Resume
+              See resume <FaFilePdf className="ml-2" aria-hidden />
             </Button>
-          </li>
-        </motion.ul>
-      </article>
-    </Section>
+          </motion.div>
+        </div>
+
+        <motion.div
+          className="hidden w-56 lg:block"
+          variants={fadeIn('left', 'spring', 0.2, 0.6)}
+          initial="hidden"
+          animate="show"
+        >
+          <div className="relative aspect-square rounded-[2rem] border border-light/10 bg-light/[0.04] p-5">
+            <div className="absolute inset-5 rounded-[1.35rem] border border-primary/45" />
+            <div className="absolute inset-10 rounded-[1rem] bg-primary/10 blur-xl" />
+            <div className="relative flex h-full flex-col justify-between">
+              <span className="text-xs font-semibold tracking-[0.2em] text-light/45">
+                STFN
+              </span>
+              <span className="text-5xl font-semibold tracking-tighter text-light">
+                /01
+              </span>
+              <span className="text-xs leading-5 text-light/50">
+                Secure by
+                <br />
+                design.
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 

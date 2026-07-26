@@ -1,13 +1,13 @@
-import nextTypescript from 'eslint-config-next/typescript';
+import eslint from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import nextTypescript from 'eslint-config-next/typescript';
+import importPlugin from 'eslint-plugin-import';
+import prettier from 'eslint-plugin-prettier';
 import reactHooks from 'eslint-plugin-react-hooks';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
-import importPlugin from 'eslint-plugin-import';
-import prettier from 'eslint-plugin-prettier';
+import tseslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig(
   ...nextTypescript,

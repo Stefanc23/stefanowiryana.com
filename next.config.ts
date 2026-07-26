@@ -2,7 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  typescript: { ignoreBuildErrors: true },
   images: {
     qualities: [100, 75],
     remotePatterns: [
@@ -10,7 +9,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
         port: '',
-        pathname: '/images/wm1dtx2w/production/**',
+        pathname: '/images/**',
       },
     ],
   },

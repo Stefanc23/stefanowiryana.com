@@ -1,16 +1,9 @@
-import UnstyledLink from '@/components/UnstyledLink';
-
 const Footer = () => {
   return (
-    <footer className="bg-transparent w-full">
-      <p className="py-5 w-fit mx-auto text-sm md:text-base">
-        &copy; {new Date().getFullYear()} by&nbsp;
-        <UnstyledLink
-          href="https://github.com/stefanc23"
-          className="text-primary"
-        >
-          Stefano Christian Wiryana
-        </UnstyledLink>
+    <footer className="relative z-10 border-t border-secondary/15 px-5 py-8 text-center text-sm text-light/58">
+      <p>
+        &copy; {new Date().getFullYear()} Stefano Christian Wiryana. Built with
+        Next.js, TypeScript, Tailwind CSS, and a security-first eye.
       </p>
     </footer>
   );

@@ -5,155 +5,158 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { ImMail4 } from 'react-icons/im';
-import { MdMenu, MdOutlineClose } from 'react-icons/md';
+import { HiMenuAlt3, HiOutlineMail, HiX } from 'react-icons/hi';
 
 import OuterClickListener from '@/components/OuterClickListener';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
-import UnstyledLink from '@/components/UnstyledLink';
 import { fadeIn } from '@/utils/motions';
+
+const navItems = [
+  { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#contact', label: 'Contact' },
+];
 
 const Header = () => {
   const [expanded, setExpanded] = useState(false);
-  const [headerBg, setHeaderBg] = useState('');
-  const links = [
-    { href: 'https://medium.com/@stefanocw', label: 'Blog' },
-    { href: '#about', label: 'About' },
-    { href: '#experience', label: 'Experience' },
-    { href: '#projects', label: 'Projects' },
-  ];
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
-      window.scrollY > 23 || window.innerWidth < 768
-        ? setHeaderBg('bg-light dark:bg-dark')
-        : setHeaderBg('bg-transparent');
-    });
-  }, []);
+    const updateHeader = () => setScrolled(window.scrollY > 24);
+    const updateMenuState = () =>
+      window.dispatchEvent(
+        new CustomEvent('navigation-menu-change', { detail: expanded }),
+      );
 
-  const handleClick = () => {
-    setExpanded(!expanded);
-  };
+    updateHeader();
+    updateMenuState();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    return () => window.removeEventListener('scroll', updateHeader);
+  }, [expanded]);
+
+  const closeMenu = () => setExpanded(false);
 
   return (
     <motion.header
-      className={`fixed bottom-0 z-50 w-full py-5 md:py-8 md:sticky md:top-0 ${headerBg}`}
+      className={`fixed inset-x-0 bottom-0 z-50 border-t border-light/8 bg-transparent px-4 py-3 md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:px-8 md:py-5 ${
+        scrolled ? 'md:bg-dark/92 md:backdrop-blur-xl' : 'md:bg-transparent'
+      }`}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.1 }}
+      animate="show"
+      variants={fadeIn('down', 'spring', 0, 0.5)}
     >
-      <div className="max-w-[69rem] mx-auto w-11/12 flex items-center justify-between">
-        <motion.div
-          className="relative w-7 h-7 sm:w-12 sm:h-12"
-          variants={fadeIn('right', 'spring', 0, 0.5)}
-        >
-          <Link href="#top">
+      <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between">
+        <motion.div variants={fadeIn('right', 'spring', 0.1, 0.5)}>
+          <Link
+            href="#top"
+            className="group flex items-center gap-3"
+            aria-label="Back to top"
+          >
             <Image
-              className="rounded-full"
-              src="/logo.svg"
-              alt="logo"
-              fill={true}
-              placeholder="blur"
-              blurDataURL="/favicon.ico"
+              src="/logo.png"
+              alt="Stefano Wiryana"
+              width={48}
+              height={48}
               priority
+              className="h-10 w-auto max-w-14 object-contain transition duration-300 group-hover:scale-105 md:h-11"
             />
           </Link>
         </motion.div>
 
-        <motion.ul
-          className="flex items-center space-x-4 text-lg sm:text-2xl text-primary"
-          variants={fadeIn('right', 'spring', 0, 0.5)}
+        <motion.nav
+          className="absolute left-1/2 hidden -translate-x-1/2 md:block"
+          variants={fadeIn('up', 'spring', 0.15, 0.5)}
+          aria-label="Primary"
         >
-          <li className="text-lg hidden md:block">Reach out to me:</li>
-          <li
-            className="hover:text-secondary transition-colors"
-            title="stefanowiryana@gmail.com"
-          >
-            <UnstyledLink
-              href="mailto:stefanowiryana@gmail.com"
-              aria-label="email"
-            >
-              <ImMail4 />
-            </UnstyledLink>
-          </li>
-          <li
-            className="hover:text-secondary transition-colors"
-            title="github.com/stefanc23"
-          >
-            <UnstyledLink
-              href="https://github.com/stefanc23"
-              aria-label="github"
-            >
-              <FaGithub />
-            </UnstyledLink>
-          </li>
-          <li
-            className="hover:text-secondary transition-colors"
-            title="linkedin.com/in/stefanowiryana"
-          >
-            <UnstyledLink
-              href="https://linkedin.com/in/stefanowiryana"
-              aria-label="linkedin"
-            >
-              <FaLinkedin />
-            </UnstyledLink>
-          </li>
-        </motion.ul>
-
-        <motion.nav variants={fadeIn('left', 'spring', 0, 0.5)}>
-          <ul className="flex items-center justify-between space-x-4 md:flex-row flex-row-reverse">
-            <li className="md:hidden">
-              <button
-                className={`${
-                  expanded && 'text-primary'
-                } ml-auto rounded p-3 outline-none hover:text-primary md:hidden`}
-                onClick={handleClick}
-                aria-label={expanded ? 'Hide menu' : 'Show menu'}
-              >
-                <div className="flex items-center text-lg sm:text-2xl text-primary">
-                  {expanded ? <MdOutlineClose /> : <MdMenu />}
-                </div>
-              </button>
-            </li>
-            <ul className="hidden md:flex md:space-x-4">
-              {links.map(({ href, label }) => (
-                <li
-                  key={`${href}${label}`}
-                  className="text-primary hover:text-secondary transition-colors"
+          <ul className="flex items-center gap-1 rounded-xl border border-light/10 bg-light/[0.04] p-1">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="block rounded-lg px-3 py-2 text-sm text-light/65 transition hover:bg-light/10 hover:text-light"
                 >
-                  <UnstyledLink href={href}>{label}</UnstyledLink>
-                </li>
-              ))}
-            </ul>
-            <li className="ml-3">
-              <ThemeSwitcher />
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </motion.nav>
+
+        <motion.div
+          className="flex items-center gap-3"
+          variants={fadeIn('left', 'spring', 0.1, 0.5)}
+        >
+          <ul className="flex items-center gap-1 text-light/70">
+            <li>
+              <a
+                href="mailto:stefanowiryana@gmail.com"
+                aria-label="Email Stefano"
+                className="grid size-9 place-items-center rounded-lg transition hover:bg-light/8 hover:text-primary"
+              >
+                <HiOutlineMail className="size-4" aria-hidden />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/stefanc23"
+                aria-label="GitHub"
+                className="grid size-9 place-items-center rounded-lg transition hover:bg-light/8 hover:text-primary"
+              >
+                <FaGithub className="size-4" aria-hidden />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://linkedin.com/in/stefanowiryana"
+                aria-label="LinkedIn"
+                className="grid size-9 place-items-center rounded-lg transition hover:bg-light/8 hover:text-primary"
+              >
+                <FaLinkedin className="size-4" aria-hidden />
+              </a>
             </li>
           </ul>
-
-          {expanded && (
-            <motion.ul
-              className="fixed bottom-20 right-[8%] bg-light dark:bg-dark border-2 border-primary opacity-80 px-3 sm:px-4 py-2 text-right md:hidden"
-              variants={fadeIn('up', 'spring', 0, 0.5)}
-              initial="hidden"
-              whileInView="show"
-            >
-              <OuterClickListener action={handleClick}>
-                {links.map(({ href, label }, index) => (
-                  <motion.li
-                    key={`${href}${label}`}
-                    className="mb-3 last:mb-0 text-sm sm:text-lg text-primary hover:text-secondary transition-colors"
-                    variants={fadeIn('up', 'spring', index * 0.1, 0.5)}
-                    initial="hidden"
-                    whileInView="show"
-                  >
-                    <UnstyledLink href={href}>{label}</UnstyledLink>
-                  </motion.li>
-                ))}
-              </OuterClickListener>
-            </motion.ul>
-          )}
-        </motion.nav>
+          <ThemeSwitcher />
+          <button
+            type="button"
+            className="grid size-9 place-items-center rounded-lg border border-light/10 bg-light/[0.06] text-light md:hidden"
+            onClick={() => setExpanded((value) => !value)}
+            aria-expanded={expanded}
+            aria-controls="mobile-navigation"
+            aria-label={expanded ? 'Hide menu' : 'Show menu'}
+          >
+            {expanded ? (
+              <HiX className="size-4" aria-hidden />
+            ) : (
+              <HiMenuAlt3 className="size-4" aria-hidden />
+            )}
+          </button>
+        </motion.div>
       </div>
+
+      {expanded && (
+        <motion.nav
+          id="mobile-navigation"
+          className="absolute bottom-[4.5rem] right-4 w-52 rounded-2xl border border-light/10 bg-obsidian/95 p-2 shadow-2xl md:hidden"
+          variants={fadeIn('up', 'spring', 0, 0.35)}
+          initial="hidden"
+          animate="show"
+          aria-label="Mobile"
+        >
+          <OuterClickListener action={closeMenu}>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block rounded-xl px-4 py-3 text-sm text-light/75 transition hover:bg-light/10 hover:text-light"
+                onClick={closeMenu}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </OuterClickListener>
+        </motion.nav>
+      )}
     </motion.header>
   );
 };
