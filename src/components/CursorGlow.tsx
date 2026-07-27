@@ -20,10 +20,10 @@ const CursorGlow = () => {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[1]"
+      className="cursor-glow pointer-events-none fixed inset-0 z-[1]"
       style={
         {
-          background: `radial-gradient(circle at ${position.x}% ${position.y}%, rgba(245, 129, 72, 0.13), transparent 12rem)`,
+          background: `radial-gradient(circle at ${position.x}% ${position.y}%, rgba(245, 129, 72, 0.13), transparent 9rem)`,
         } as CSSProperties
       }
       aria-hidden
