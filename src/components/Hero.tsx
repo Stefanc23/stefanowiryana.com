@@ -1,19 +1,28 @@
 'use client';
 
 import { motion } from 'motion/react';
+import dynamic from 'next/dynamic';
 import { FaFilePdf } from 'react-icons/fa';
 import { HiArrowRight } from 'react-icons/hi';
 
 import Button from '@/components/Button';
 import { fadeIn } from '@/utils/motions';
 
+const VerificationOrbit = dynamic(
+  () => import('@/components/VerificationOrbit'),
+  {
+    ssr: false,
+    loading: () => <div className="aspect-square" aria-hidden />,
+  },
+);
+
 const Hero = () => {
   return (
     <section
-      className="relative isolate flex min-h-[calc(100svh-4.5rem)] items-center overflow-hidden px-5 py-24 sm:px-8 md:min-h-[calc(100svh-5.25rem)] lg:px-10"
+      className="relative isolate flex min-h-[calc(100svh-4.5rem)] items-center overflow-hidden px-5 py-20 sm:px-8 md:min-h-[calc(100svh-5.25rem)] lg:px-10"
       aria-labelledby="hero-title"
     >
-      <div className="relative mx-auto grid w-full max-w-7xl gap-16 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div className="relative mx-auto grid w-full max-w-7xl gap-9 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-16">
         <div className="max-w-4xl">
           <motion.p
             className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary-200"
@@ -61,28 +70,12 @@ const Hero = () => {
         </div>
 
         <motion.div
-          className="hidden w-56 lg:block"
+          className="mx-auto w-full max-w-[18rem] sm:max-w-[21rem] lg:mx-0 lg:w-[25rem] lg:max-w-none"
           variants={fadeIn('left', 'spring', 0.2, 0.6)}
           initial="hidden"
           animate="show"
         >
-          <div className="relative aspect-square rounded-[2rem] border border-light/10 bg-light/[0.04] p-5">
-            <div className="absolute inset-5 rounded-[1.35rem] border border-primary/45" />
-            <div className="absolute inset-10 rounded-[1rem] bg-primary/10 blur-xl" />
-            <div className="relative flex h-full flex-col justify-between">
-              <span className="text-xs font-semibold tracking-[0.2em] text-light/45">
-                STFN
-              </span>
-              <span className="text-5xl font-semibold tracking-tighter text-light">
-                /01
-              </span>
-              <span className="text-xs leading-5 text-light/50">
-                Secure by
-                <br />
-                design.
-              </span>
-            </div>
-          </div>
+          <VerificationOrbit />
         </motion.div>
       </div>
     </section>

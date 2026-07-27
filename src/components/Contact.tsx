@@ -1,7 +1,11 @@
+'use client';
+
+import { useState } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
 
 import Button from '@/components/Button';
+import EmberwingCompanion from '@/components/EmberwingCompanion';
 import Section from '@/components/Section';
 
 const links = [
@@ -26,6 +30,10 @@ const links = [
 ];
 
 const Contact = () => {
+  const [isCtaHovered, setIsCtaHovered] = useState(false);
+  const [isCtaFocused, setIsCtaFocused] = useState(false);
+  const isGreeting = isCtaHovered || isCtaFocused;
+
   return (
     <Section
       id="contact"
@@ -35,15 +43,25 @@ const Contact = () => {
       className="pb-28"
     >
       <div className="etched-border grid gap-8 bg-gradient-to-br from-light/[0.06] to-primary/10 p-6 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10">
-        <div>
+        <div className="relative">
           <p className="max-w-2xl text-lg leading-8 text-light/76">
             I work where security architecture, customer discovery, and frontend
             execution need to meet in one clear solution.
           </p>
-          <div className="mt-8">
-            <Button href="mailto:stefanowiryana@gmail.com">
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <Button
+              href="mailto:stefanowiryana@gmail.com"
+              onPointerEnter={() => setIsCtaHovered(true)}
+              onPointerLeave={() => setIsCtaHovered(false)}
+              onFocus={() => setIsCtaFocused(true)}
+              onBlur={() => setIsCtaFocused(false)}
+            >
               Start a conversation
             </Button>
+            <EmberwingCompanion
+              key={isGreeting ? 'greeting' : 'idle'}
+              greetingActive={isGreeting}
+            />
           </div>
         </div>
         <ul className="grid gap-3">
