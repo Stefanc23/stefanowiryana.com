@@ -21,14 +21,21 @@ const Section = ({
 }: SectionProps) => {
   return (
     <section
-      id={id}
+      aria-labelledby={`${id}-title`}
       className={`relative mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28 ${className}`}
     >
-      <div className={`mb-10 max-w-3xl ${headingClassName}`}>
+      <div
+        id={id}
+        className={`mb-10 max-w-3xl ${headingClassName}`}
+        data-section-heading
+      >
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
           {eyebrow}
         </p>
-        <h2 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-tight text-light sm:text-5xl">
+        <h2
+          id={`${id}-title`}
+          className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-tight text-light sm:text-5xl"
+        >
           {title}
         </h2>
         {intro && (

@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { HiArrowUp } from 'react-icons/hi';
 
+import { navigateToSection } from '@/utils/sectionNavigation';
+
 const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
   const [menuExpanded, setMenuExpanded] = useState(false);
@@ -32,7 +34,7 @@ const ScrollToTop = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.85, y: 8 }}
           transition={{ duration: 0.2 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => navigateToSection('#top')}
           aria-label="Back to top"
         >
           <HiArrowUp className="size-4" aria-hidden />

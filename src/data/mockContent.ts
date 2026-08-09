@@ -1,4 +1,30 @@
-import type { Experience, Project } from '@/types/content';
+import type { AboutContent, Experience, Project } from '@/types/content';
+
+export const about: AboutContent = {
+  displayName: 'Stefano Christian Wiryana',
+  tagline: 'Security Solution Engineer / Web Developer',
+  bio: 'I am a Solution Delivery Engineer, Zscaler Certified Sales Engineer, delivery consultant, and data security specialist. I help customers turn security requirements into workable technical decisions, from discovery through implementation.',
+  skills: [
+    { category: 'Security', name: 'Security architecture' },
+    { category: 'Security', name: 'Threat modeling' },
+    { category: 'Security', name: 'Application security' },
+    { category: 'Security', name: 'Cloud security' },
+    { category: 'Security', name: 'IAM concepts' },
+    { category: 'Security', name: 'Secure SDLC' },
+    { category: 'Solution Engineering', name: 'Technical discovery' },
+    { category: 'Solution Engineering', name: 'Demo storytelling' },
+    { category: 'Solution Engineering', name: 'Customer workshops' },
+    { category: 'Solution Engineering', name: 'Requirements mapping' },
+    { category: 'Solution Engineering', name: 'Executive communication' },
+    { category: 'Solution Engineering', name: 'Value translation' },
+    { category: 'Web Development', name: 'Next.js' },
+    { category: 'Web Development', name: 'React' },
+    { category: 'Web Development', name: 'TypeScript' },
+    { category: 'Web Development', name: 'Tailwind CSS' },
+    { category: 'Web Development', name: 'Sanity CMS' },
+    { category: 'Web Development', name: 'Vercel' },
+  ],
+};
 
 export const experiences: Experience[] = [
   {

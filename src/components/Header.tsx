@@ -10,6 +10,10 @@ import { HiMenuAlt3, HiOutlineMail, HiX } from 'react-icons/hi';
 import OuterClickListener from '@/components/OuterClickListener';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { fadeIn } from '@/utils/motions';
+import {
+  navigateToSection,
+  SECTION_NAVIGATION_EVENT,
+} from '@/utils/sectionNavigation';
 
 const navItems = [
   { href: '#about', label: 'About' },
@@ -21,26 +25,94 @@ const navItems = [
 const Header = () => {
   const [expanded, setExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const updateHeader = () => setScrolled(window.scrollY > 24);
-    const updateMenuState = () =>
-      window.dispatchEvent(
-        new CustomEvent('navigation-menu-change', { detail: expanded }),
-      );
-
     updateHeader();
-    updateMenuState();
     window.addEventListener('scroll', updateHeader, { passive: true });
     return () => window.removeEventListener('scroll', updateHeader);
+  }, []);
+
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent<boolean>('navigation-menu-change', {
+        detail: expanded,
+      }),
+    );
+
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent<boolean>('navigation-menu-change', { detail: false }),
+      );
+    };
   }, [expanded]);
+
+  useEffect(() => {
+    const sections = navItems
+      .map(({ href }) => document.querySelector<HTMLElement>(href))
+      .filter((section): section is HTMLElement => section !== null);
+    let frame = 0;
+
+    const updateActiveSection = () => {
+      if (window.scrollY < 120) {
+        setActiveSection('');
+        frame = 0;
+        return;
+      }
+
+      const viewportAnchor = window.innerWidth >= 768 ? 128 : 104;
+      const currentSection = sections.reduce<string>((current, section) => {
+        const scrollTarget =
+          section.querySelector<HTMLElement>('[data-section-heading]') ??
+          section;
+
+        return scrollTarget.getBoundingClientRect().top <= viewportAnchor
+          ? `#${section.id}`
+          : current;
+      }, '');
+
+      setActiveSection(currentSection);
+      frame = 0;
+    };
+
+    const requestActiveSectionUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    const updateFromNavigation = (event: Event) => {
+      setActiveSection((event as CustomEvent<string>).detail);
+    };
+
+    requestActiveSectionUpdate();
+    window.addEventListener('hashchange', requestActiveSectionUpdate);
+    window.addEventListener('popstate', requestActiveSectionUpdate);
+    window.addEventListener('resize', requestActiveSectionUpdate);
+    window.addEventListener('scroll', requestActiveSectionUpdate, {
+      passive: true,
+    });
+    window.addEventListener(SECTION_NAVIGATION_EVENT, updateFromNavigation);
+
+    return () => {
+      window.removeEventListener('hashchange', requestActiveSectionUpdate);
+      window.removeEventListener('popstate', requestActiveSectionUpdate);
+      window.removeEventListener('resize', requestActiveSectionUpdate);
+      window.removeEventListener('scroll', requestActiveSectionUpdate);
+      window.removeEventListener(
+        SECTION_NAVIGATION_EVENT,
+        updateFromNavigation,
+      );
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   const closeMenu = () => setExpanded(false);
 
   return (
     <motion.header
-      className={`fixed inset-x-0 bottom-0 z-50 border-t border-light/8 bg-transparent px-4 py-3 md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:px-8 md:py-5 ${
-        scrolled ? 'md:bg-dark/92 md:backdrop-blur-xl' : 'md:bg-transparent'
+      className={`fixed inset-x-0 bottom-0 z-50 border-t border-light/10 bg-dark/70 px-4 py-3 backdrop-blur-2xl md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:px-8 md:py-5 ${
+        scrolled ? 'shadow-[0_16px_50px_rgba(0,0,0,0.2)]' : ''
       }`}
       initial="hidden"
       animate="show"
@@ -52,6 +124,10 @@ const Header = () => {
             href="#top"
             className="group flex items-center gap-3"
             aria-label="Back to top"
+            onClick={(event) => {
+              event.preventDefault();
+              navigateToSection('#top');
+            }}
           >
             <Image
               src="/logo.png"
@@ -69,12 +145,23 @@ const Header = () => {
           variants={fadeIn('up', 'spring', 0.15, 0.5)}
           aria-label="Primary"
         >
-          <ul className="flex items-center gap-1 rounded-xl border border-light/10 bg-light/[0.04] p-1">
+          <ul className="flex items-center gap-1 rounded-xl border border-light/10 bg-light/[0.055] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="block rounded-lg px-3 py-2 text-sm text-light/65 transition hover:bg-light/10 hover:text-light"
+                  aria-current={
+                    activeSection === item.href ? 'location' : undefined
+                  }
+                  className={`block rounded-lg px-3 py-2 text-sm transition ${
+                    activeSection === item.href
+                      ? 'bg-light text-dark'
+                      : 'text-light/65 hover:bg-light/10 hover:text-light'
+                  }`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigateToSection(item.href);
+                  }}
                 >
                   {item.label}
                 </Link>
@@ -137,7 +224,7 @@ const Header = () => {
       {expanded && (
         <motion.nav
           id="mobile-navigation"
-          className="absolute bottom-[4.5rem] right-4 w-52 rounded-2xl border border-light/10 bg-obsidian/95 p-2 shadow-2xl md:hidden"
+          className="absolute bottom-[4.5rem] right-4 w-52 rounded-2xl border border-light/10 bg-dark/70 p-2 shadow-2xl backdrop-blur-2xl md:hidden"
           variants={fadeIn('up', 'spring', 0, 0.35)}
           initial="hidden"
           animate="show"
@@ -148,8 +235,19 @@ const Header = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className="block rounded-xl px-4 py-3 text-sm text-light/75 transition hover:bg-light/10 hover:text-light"
-                onClick={closeMenu}
+                aria-current={
+                  activeSection === item.href ? 'location' : undefined
+                }
+                className={`block rounded-xl px-4 py-3 text-sm transition ${
+                  activeSection === item.href
+                    ? 'bg-light text-dark'
+                    : 'text-light/75 hover:bg-light/10 hover:text-light'
+                }`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigateToSection(item.href);
+                  closeMenu();
+                }}
               >
                 {item.label}
               </Link>

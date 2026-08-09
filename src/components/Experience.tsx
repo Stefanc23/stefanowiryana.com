@@ -6,7 +6,6 @@ import { HiChevronDown } from 'react-icons/hi';
 
 import Section from '@/components/Section';
 import type { Experience as ExperienceType } from '@/types/content';
-import { fadeIn } from '@/utils/motions';
 
 interface ExperienceProps {
   data: ExperienceType[];
@@ -34,14 +33,10 @@ const Experience = ({ data }: ExperienceProps) => {
       className="!max-w-none !px-0 sm:!px-0 lg:!px-0"
       headingClassName="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10"
     >
-      <div className="mx-5 md:hidden sm:mx-8">
-        <ol className="relative grid gap-4 border-l border-light/15 pl-6">
-          {sortedData.map((item, index) => (
-            <ExperienceCard
-              key={`${item.company}-${item.role}`}
-              item={item}
-              index={index}
-            />
+      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8 md:hidden">
+        <ol className="relative grid gap-4 border-l border-light/15 pl-6 sm:pl-8">
+          {sortedData.map((item) => (
+            <ExperienceCard key={`${item.company}-${item.role}`} item={item} />
           ))}
         </ol>
       </div>
@@ -68,47 +63,46 @@ const Experience = ({ data }: ExperienceProps) => {
 
 const ExperienceCard = ({
   item,
-  index,
+  index = 0,
   horizontal = false,
 }: {
   item: ExperienceType;
-  index: number;
+  index?: number;
   horizontal?: boolean;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const above = horizontal && index % 2 === 1;
+  const toggleExpanded = () => setExpanded((value) => !value);
 
   return (
-    <motion.li
+    <li
       className={`${horizontal ? 'relative h-full' : 'relative'} ${
         expanded ? 'z-30' : 'z-10'
       }`}
-      variants={fadeIn('up', 'spring', index * 0.08, 0.45)}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
     >
-      {horizontal && (
+      {horizontal ? (
         <span
           className={`absolute left-1/2 z-[1] w-px -translate-x-1/2 bg-primary/65 ${
             above ? 'top-[14rem] h-32' : 'top-[calc(22rem+0.625rem)] h-10'
           }`}
           aria-hidden
         />
-      )}
+      ) : null}
       <span
         className={
           horizontal
             ? 'absolute left-1/2 top-[22rem] z-10 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[5px] border-dark bg-primary shadow-[0_0_0_1px_rgba(245,129,72,0.7)]'
-            : 'absolute -left-[1.95rem] top-7 size-3 rounded-full border-2 border-dark bg-primary'
+            : 'absolute -left-[1.95rem] top-7 size-3 rounded-full border-2 border-dark bg-primary shadow-[0_0_0_1px_rgba(245,129,72,0.7)] sm:-left-[2.45rem]'
         }
         aria-hidden
       />
       <article
-        className={`etched-border relative z-20 w-full max-w-md rounded-2xl p-5 ${
+        className={`etched-border group relative z-20 w-full cursor-pointer outline-none transition duration-300 ${
+          horizontal ? 'max-w-md' : 'max-w-none'
+        } rounded-2xl p-5 sm:p-6 ${
           expanded
             ? 'bg-obsidian shadow-[0_24px_80px_rgba(0,0,0,0.56)]'
-            : 'bg-light/[0.035]'
+            : 'bg-light/[0.035] hover:-translate-y-0.5 hover:bg-light/[0.055]'
         } ${
           horizontal
             ? above
@@ -117,6 +111,13 @@ const ExperienceCard = ({
             : ''
         }`}
       >
+        <button
+          type="button"
+          className="absolute inset-0 z-30 cursor-pointer rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary"
+          onClick={toggleExpanded}
+          aria-expanded={expanded}
+          aria-label={`${expanded ? 'Collapse' : 'Expand'} ${item.role} at ${item.company}`}
+        />
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary-200">
@@ -127,18 +128,15 @@ const ExperienceCard = ({
               {item.role}
             </h3>
           </div>
-          <button
-            type="button"
-            className="grid size-8 shrink-0 place-items-center rounded-full border border-light/12 text-light/55 transition hover:border-primary hover:text-primary"
-            onClick={() => setExpanded((value) => !value)}
-            aria-expanded={expanded}
-            aria-label={`${expanded ? 'Collapse' : 'Expand'} ${item.role}`}
+          <span
+            className="grid size-9 shrink-0 place-items-center rounded-full border border-light/12 text-light/55 transition group-hover:border-primary group-hover:text-primary"
+            aria-hidden
           >
             <HiChevronDown
               className={`size-4 transition ${expanded ? 'rotate-180' : ''}`}
               aria-hidden
             />
-          </button>
+          </span>
         </div>
         <p className="mt-1 text-sm text-light/50">
           {item.company} / {item.location}
@@ -151,7 +149,7 @@ const ExperienceCard = ({
           {item.summary}
         </p>
         <AnimatePresence initial={false}>
-          {expanded && (
+          {expanded && item.highlights.length > 0 && (
             <motion.ul
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
@@ -167,18 +165,20 @@ const ExperienceCard = ({
             </motion.ul>
           )}
         </AnimatePresence>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {item.focusAreas.map((focus) => (
-            <span
-              key={focus}
-              className="rounded-md bg-light/[0.07] px-2.5 py-1 text-xs text-light/60"
-            >
-              {focus}
-            </span>
-          ))}
-        </div>
+        {item.focusAreas.length > 0 ? (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {item.focusAreas.map((focus) => (
+              <span
+                key={focus}
+                className="rounded-md bg-light/[0.07] px-2.5 py-1 text-xs text-light/60"
+              >
+                {focus}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </article>
-    </motion.li>
+    </li>
   );
 };
 

@@ -67,6 +67,47 @@ body {
     #0b0d12;
 }
 
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background: #f5f7fa;
+  padding: 0.75rem 1rem;
+  color: #0b0d12;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid #d9b875;
+  outline-offset: 3px;
+}
+
+[data-section-heading] {
+  scroll-margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  [data-section-heading] {
+    scroll-margin-top: 6.75rem;
+  }
+}
+
+.cursor-glow {
+  --glow-x: 50%;
+  --glow-y: 35%;
+  background: radial-gradient(
+    circle at var(--glow-x) var(--glow-y),
+    rgba(245, 129, 72, 0.13),
+    transparent 9rem
+  );
+}
+
 .light {
   color-scheme: light;
   --color-primary: #c65324;
@@ -277,6 +318,15 @@ html.light {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .orbit-fallback__ring {
     animation: none;
   }

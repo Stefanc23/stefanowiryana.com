@@ -1,11 +1,37 @@
 import {
+  about as mockAbout,
   experiences as mockExperiences,
   projects as mockProjects,
 } from '@/data/mockContent';
 import { isSanityConfigured } from '@/sanity/env';
-import type { Experience, Project } from '@/types/content';
-import { fetchExperienceData } from '@/utils/fetchExperienceData';
-import { fetchProjectData } from '@/utils/fetchProjectData';
+import { clientFetch } from '@/sanity/lib/client';
+import type {
+  AboutContent,
+  Experience,
+  PortfolioImage,
+  Project,
+  Skill,
+} from '@/types/content';
+
+interface SanityImageAsset {
+  metadata?: {
+    dimensions?: {
+      height?: number;
+      width?: number;
+    };
+    lqip?: string;
+  };
+  url?: string;
+}
+
+interface SanityAbout {
+  bio?: string;
+  displayName?: string;
+  profileImage?: SanityImageAsset;
+  resumeUrl?: string;
+  skills?: Skill[];
+  tagline?: string;
+}
 
 interface SanityExperience {
   company?: string;
@@ -24,11 +50,59 @@ interface SanityProject {
   category?: string;
   demoLink?: string;
   description?: string;
+  featured?: boolean;
   impact?: string;
+  image?: SanityImageAsset;
   name?: string;
+  projectDate?: string;
   repoLink?: string;
+  responsibility?: string;
+  sortOrder?: number;
   technologies?: string[];
 }
+
+interface SanityPortfolioResponse {
+  about?: SanityAbout;
+  experiences?: SanityExperience[];
+  projects?: SanityProject[];
+}
+
+const portfolioQuery = `{
+  "about": *[_type == "about"][0]{
+    displayName,
+    tagline,
+    bio,
+    skills[]{name, category},
+    "profileImage": profileImage.asset->{url, metadata{dimensions, lqip}},
+    "resumeUrl": resumeFile.asset->url
+  },
+  "experiences": *[_type == "experience"] | order(startDate desc){
+    role,
+    company,
+    startDate,
+    endDate,
+    location,
+    employmentType,
+    description,
+    summary,
+    highlights,
+    focusAreas
+  },
+  "projects": *[_type == "project"] | order(featured desc, sortOrder asc, name asc){
+    name,
+    category,
+    description,
+    featured,
+    impact,
+    projectDate,
+    responsibility,
+    sortOrder,
+    technologies,
+    "image": image.asset->{url, metadata{dimensions, lqip}},
+    repoLink,
+    demoLink
+  }
+}`;
 
 const projectCategories: Record<string, Project['category']> = {
   Cloud: 'Cloud',
@@ -37,6 +111,40 @@ const projectCategories: Record<string, Project['category']> = {
   Product: 'Product',
   Security: 'Security',
   Web: 'Web',
+};
+
+const toImage = (
+  asset: SanityImageAsset | undefined,
+  alt: string,
+): PortfolioImage | undefined => {
+  const height = asset?.metadata?.dimensions?.height;
+  const width = asset?.metadata?.dimensions?.width;
+
+  if (!asset?.url || !height || !width) return undefined;
+
+  return {
+    alt,
+    height,
+    lqip: asset.metadata?.lqip,
+    url: asset.url,
+    width,
+  };
+};
+
+const toAbout = (entry?: SanityAbout): AboutContent => {
+  if (!entry) return mockAbout;
+
+  const displayName = entry.displayName?.trim() || mockAbout.displayName;
+  const skills = entry.skills?.filter((skill) => skill.name && skill.category);
+
+  return {
+    bio: entry.bio?.trim() || mockAbout.bio,
+    displayName,
+    profileImage: toImage(entry.profileImage, displayName),
+    resumeUrl: entry.resumeUrl,
+    skills: skills?.length ? skills : mockAbout.skills,
+    tagline: entry.tagline?.trim() || mockAbout.tagline,
+  };
 };
 
 const toExperience = (entry: SanityExperience): Experience | null => {
@@ -65,38 +173,52 @@ const toProject = (entry: SanityProject): Project | null => {
     category: projectCategories[entry.category ?? ''] ?? 'Product',
     demoLink: entry.demoLink,
     description: entry.description,
-    impact: entry.impact ?? 'Details available on request.',
+    featured: entry.featured ?? false,
+    impact: entry.impact?.trim() || undefined,
+    image: toImage(entry.image, entry.name),
     name: entry.name,
+    projectDate: entry.projectDate,
     repoLink: entry.repoLink,
+    responsibility: entry.responsibility?.trim() || undefined,
+    sortOrder: entry.sortOrder,
     technologies: entry.technologies ?? [],
   };
 };
 
 export const getPortfolioContent = async (): Promise<{
+  about: AboutContent;
   experiences: Experience[];
   projects: Project[];
 }> => {
   if (!isSanityConfigured) {
-    return { experiences: mockExperiences, projects: mockProjects };
+    return {
+      about: mockAbout,
+      experiences: mockExperiences,
+      projects: mockProjects,
+    };
   }
 
   try {
-    const [sanityExperiences, sanityProjects] = await Promise.all([
-      fetchExperienceData(),
-      fetchProjectData(),
-    ]);
-    const experiences = (sanityExperiences as SanityExperience[])
+    const sanityContent =
+      await clientFetch<SanityPortfolioResponse>(portfolioQuery);
+    const experiences = (sanityContent.experiences ?? [])
       .map(toExperience)
       .filter((entry): entry is Experience => entry !== null);
-    const projects = (sanityProjects as SanityProject[])
+    const projects = (sanityContent.projects ?? [])
       .map(toProject)
       .filter((entry): entry is Project => entry !== null);
 
     return {
+      about: toAbout(sanityContent.about),
       experiences: experiences.length > 0 ? experiences : mockExperiences,
       projects: projects.length > 0 ? projects : mockProjects,
     };
-  } catch {
-    return { experiences: mockExperiences, projects: mockProjects };
+  } catch (error) {
+    console.error('Sanity content fetch failed; using local fallback.', error);
+    return {
+      about: mockAbout,
+      experiences: mockExperiences,
+      projects: mockProjects,
+    };
   }
 };

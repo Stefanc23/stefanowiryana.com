@@ -40,13 +40,15 @@ The portfolio reads from Sanity when `NEXT_PUBLIC_SANITY_PROJECT_ID` and
 content from `src/data/mockContent.ts`, so local development and Vercel previews
 remain usable without CMS credentials.
 
-Content mapping is centralized in `src/data/portfolioContent.ts`, keeping the
-rendering components stable as Sanity fields evolve:
+Content mapping is centralized in `src/data/portfolioContent.ts`. One tagged
+GROQ request reads About, Experience, and Project documents, then maps each
+section independently so an incomplete document does not hide valid CMS data:
 
 - `src/types/content.ts` for shared `Experience` and `Project` contracts.
 - `src/sanity/lib/client.ts` for the configured Sanity client.
-- `src/utils/fetchExperienceData.ts` and `src/utils/fetchProjectData.ts` contain GROQ queries.
-- `src/data/portfolioContent.ts` maps Sanity documents to shared UI contracts.
+- `src/data/portfolioContent.ts` contains the public portfolio query and maps
+  legacy Sanity documents to shared UI contracts.
+- Sanity profile and project images are rendered with Next.js image optimization.
 - `src/data/mockContent.ts` remains the local fallback for previews and tests.
 
 Required environment variables for a real Sanity project:
@@ -54,11 +56,20 @@ Required environment variables for a real Sanity project:
 ```bash
 NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2023-06-23
+NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
 SANITY_REVALIDATE_SECRET=
 ```
 
-`SANITY_REVALIDATE_SECRET` is only needed when configuring a Sanity webhook for
-`POST /api/revalidate?secret=...`. Keep it server-only. The current
-`NEXT_PUBLIC_REVALIDATION_TOKEN` remains temporarily supported for compatibility,
-but should be renamed to `SANITY_REVALIDATE_SECRET` in `.env.local` and Vercel.
+`SANITY_REVALIDATE_SECRET` is only needed for the Sanity webhook at
+`POST /api/revalidate`. Configure the same secret in Sanity so its webhook
+signature can be verified. Keep it server-only; query-string and `NEXT_PUBLIC_*`
+revalidation secrets are intentionally unsupported.
+
+Create a unique value with `openssl rand -base64 32`, place it in `.env.local`
+and the Vercel server environment, then paste that exact value into the Sanity
+webhook's secret field at **Settings → API → Webhooks**. It is an authentication
+secret, not a Sanity API token, and must never be committed or exposed with a
+`NEXT_PUBLIC_` prefix.
+
+See `docs/website-enhancement-plan.md` for the current UI/CMS audit and the
+recommended enhancement sequence.

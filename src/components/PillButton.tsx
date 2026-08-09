@@ -4,12 +4,12 @@ export interface PillButtonProps extends ComponentPropsWithoutRef<'button'> {
   variant?: 'solid' | 'outline';
 }
 
-const PillButton: React.FC<PillButtonProps> = ({
+const PillButton = ({
   variant = 'solid',
   children,
   className = '',
   ...rest
-}) => {
+}: PillButtonProps) => {
   return (
     <button
       className={`py-2 px-4 shadow-md rounded-full font-semibold text-sm border-2 border-primary ${

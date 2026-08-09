@@ -8,6 +8,13 @@ import Button from '@/components/Button';
 import EmberwingCompanion from '@/components/EmberwingCompanion';
 import Section from '@/components/Section';
 
+
+/**
+  TODO:
+  - Develop chatbot that can answer questions regarding my experience & projects, and gather user needs then send them to my email.
+  - Connect the chatbot to the "Start a conversation" CTA.
+*/
+
 const links = [
   {
     href: 'mailto:stefanowiryana@gmail.com',
@@ -39,7 +46,7 @@ const Contact = () => {
       id="contact"
       eyebrow="Contact"
       title="Let's make it clear."
-      intro="For security, cloud, and web work that needs both rigor and taste."
+      intro="For security, cloud, and web work that needs both ingenuity and taste."
       className="pb-28"
     >
       <div className="etched-border grid gap-8 bg-gradient-to-br from-light/[0.06] to-primary/10 p-6 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10">

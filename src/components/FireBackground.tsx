@@ -1,12 +1,14 @@
 'use client';
 
+import { useReducedMotion } from 'motion/react';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 
 const FireBackground = () => {
+  const prefersReducedMotion = useReducedMotion();
   const embers = useMemo(
     () =>
-      Array.from({ length: 46 }, (_, id) => ({
+      Array.from({ length: prefersReducedMotion ? 0 : 30 }, (_, id) => ({
         id,
         delay: `${(id % 13) * 0.55}s`,
         duration: `${8 + (id % 8) * 0.75}s`,
@@ -15,7 +17,7 @@ const FireBackground = () => {
         opacity: 0.25 + (id % 4) * 0.12,
         size: `${id % 5 === 0 ? 4 : 2 + (id % 2)}px`,
       })),
-    [],
+    [prefersReducedMotion],
   );
 
   return (

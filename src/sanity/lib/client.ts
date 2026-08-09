@@ -1,5 +1,4 @@
 import { createClient } from 'next-sanity';
-import { cache } from 'react';
 
 import { apiVersion, dataset, projectId, useCdn } from '@/sanity/env';
 
@@ -10,4 +9,14 @@ export const client = createClient({
   useCdn,
 });
 
-export const clientFetch = cache(client.fetch.bind(client));
+export const clientFetch = <QueryResponse>(query: string) =>
+  client.fetch<QueryResponse>(
+    query,
+    {},
+    {
+      next: {
+        revalidate: 3600,
+        tags: ['sanity-content'],
+      },
+    },
+  );
