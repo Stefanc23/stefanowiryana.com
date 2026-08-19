@@ -6,14 +6,14 @@ import Projects from '@/components/Projects';
 import { getPortfolioContent } from '@/data/portfolioContent';
 
 export default async function Home() {
-  const { about, experiences, projects } = await getPortfolioContent();
+  const { about, experiences } = await getPortfolioContent();
 
   return (
     <>
       <Hero />
       <About data={about} />
       <Experience data={experiences} />
-      <Projects data={projects} />
+      <Projects />
       <Contact />
     </>
   );

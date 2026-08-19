@@ -8,7 +8,6 @@ import Button from '@/components/Button';
 import EmberwingCompanion from '@/components/EmberwingCompanion';
 import Section from '@/components/Section';
 
-
 /**
   TODO:
   - Develop chatbot that can answer questions regarding my experience & projects, and gather user needs then send them to my email.

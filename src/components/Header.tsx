@@ -50,8 +50,24 @@ const Header = () => {
 
   useEffect(() => {
     const sections = navItems
-      .map(({ href }) => document.querySelector<HTMLElement>(href))
-      .filter((section): section is HTMLElement => section !== null);
+      .map(({ href }) => ({
+        href,
+        heading: document.querySelector<HTMLElement>(href),
+      }))
+      .map(({ href, heading }) => ({
+        href,
+        heading,
+        root: heading?.closest<HTMLElement>('section') ?? heading,
+      }))
+      .filter(
+        (
+          section,
+        ): section is {
+          href: string;
+          heading: HTMLElement;
+          root: HTMLElement;
+        } => section.heading !== null,
+      );
     let frame = 0;
 
     const updateActiveSection = () => {
@@ -62,17 +78,27 @@ const Header = () => {
       }
 
       const viewportAnchor = window.innerWidth >= 768 ? 128 : 104;
-      const currentSection = sections.reduce<string>((current, section) => {
-        const scrollTarget =
-          section.querySelector<HTMLElement>('[data-section-heading]') ??
-          section;
+      const sectionAtAnchor = sections.find(({ root }) => {
+        const bounds = root.getBoundingClientRect();
 
-        return scrollTarget.getBoundingClientRect().top <= viewportAnchor
-          ? `#${section.id}`
-          : current;
-      }, '');
+        return bounds.top <= viewportAnchor && bounds.bottom > viewportAnchor;
+      });
+      const sectionAtViewportCenter = sections.find(({ root }) => {
+        const bounds = root.getBoundingClientRect();
+        const viewportCenter = window.innerHeight / 2;
 
-      setActiveSection(currentSection);
+        return bounds.top <= viewportCenter && bounds.bottom > viewportCenter;
+      });
+      const crossedSections = sections.filter(
+        ({ root }) => root.getBoundingClientRect().top <= viewportAnchor,
+      );
+      const currentSection =
+        sectionAtAnchor ??
+        sectionAtViewportCenter ??
+        crossedSections.at(-1) ??
+        null;
+
+      setActiveSection(currentSection?.href ?? '');
       frame = 0;
     };
 

@@ -21,8 +21,8 @@ export default function OpenGraphImage() {
           From security posture evaluation to confident deployment.
         </div>
         <div tw="mt-9 text-[32px] leading-tight text-[#c7ced9]">
-          Cyber security solution delivery, from proof of concept through managed
-          service.
+          Cyber security solution delivery, from proof of concept through
+          managed service.
         </div>
       </div>
       <div tw="flex items-center border-t border-[#424752] pt-7 text-[25px] text-[#f58148]">

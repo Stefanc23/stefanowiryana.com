@@ -39,7 +39,8 @@ const Hero = () => {
           initial="hidden"
           animate="show"
         >
-          Hi! I'm <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-secondary">
+          Hi! I&apos;m{' '}
+          <span className="bg-linear-to-br from-primary to-secondary bg-clip-text text-transparent">
             Stefano
           </span>
         </motion.h1>
@@ -57,7 +58,8 @@ const Hero = () => {
           initial="hidden"
           animate="show"
         >
-          I help companies increase their cyber security posture with Zscaler. I'm also a passionate software developer and AI enthusiast.
+          I help companies increase their cyber security posture with Zscaler.
+          I&apos;m also a passionate software developer and AI enthusiast.
         </motion.p>
         <motion.div
           className="relative z-10 mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-start-1"
