@@ -3,7 +3,7 @@
 import type { ThreeEvent } from '@react-three/fiber';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useReducedMotion } from 'motion/react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const ORANGE = '#f58148';
@@ -14,6 +14,7 @@ const VERIFICATION_CYCLE = PULSE_SLOT * 3;
 
 interface RingProps {
   delay: number;
+  highlighted: boolean;
   radius: number;
   rotation: [number, number, number];
   speed: number;
@@ -88,7 +89,13 @@ const createObsidianTexture = (seed: number) => {
 
   return texture;
 };
-const VerificationRing = ({ delay, radius, rotation, speed }: RingProps) => {
+const VerificationRing = ({
+  delay,
+  highlighted,
+  radius,
+  rotation,
+  speed,
+}: RingProps) => {
   const movingTrack = useRef<THREE.Group>(null);
   const pulseMaterial = useRef<THREE.MeshBasicMaterial>(null);
   const surfaceTexture = useMemo(
@@ -111,7 +118,8 @@ const VerificationRing = ({ delay, radius, rotation, speed }: RingProps) => {
     }
 
     if (pulseMaterial.current) {
-      pulseMaterial.current.opacity = 0.06 + pulse * 0.9;
+      pulseMaterial.current.opacity =
+        (highlighted ? 0.16 : 0.06) + pulse * (highlighted ? 1 : 0.9);
     }
   });
 
@@ -208,7 +216,7 @@ const VerificationRing = ({ delay, radius, rotation, speed }: RingProps) => {
   );
 };
 
-const ObsidianCore = () => {
+const ObsidianCore = ({ highlighted }: { highlighted: boolean }) => {
   const core = useRef<THREE.Group>(null);
   const pulseRefs = useRef<(THREE.Mesh | null)[]>([]);
   const dragging = useRef(false);
@@ -331,7 +339,7 @@ const ObsidianCore = () => {
         <lineBasicMaterial
           color={ORANGE}
           transparent
-          opacity={0.58}
+          opacity={highlighted ? 0.9 : 0.58}
           toneMapped={false}
         />
       </lineSegments>
@@ -346,11 +354,15 @@ const ObsidianCore = () => {
           <meshBasicMaterial color={ORANGE} toneMapped={false} />
         </mesh>
       ))}
-      <pointLight color={ORANGE} intensity={2.4} distance={2.2} />
+      <pointLight
+        color={ORANGE}
+        intensity={highlighted ? 4 : 2.4}
+        distance={highlighted ? 2.8 : 2.2}
+      />
     </group>
   );
 };
-const OrbitScene = () => (
+const OrbitScene = ({ highlighted }: { highlighted: boolean }) => (
   <>
     <hemisphereLight args={['#dce3ed', '#0b0d11', 1.1]} />
     <ambientLight intensity={0.58} />
@@ -366,21 +378,24 @@ const OrbitScene = () => (
       color={ORANGE}
       distance={6}
     />
-    <ObsidianCore />
+    <ObsidianCore highlighted={highlighted} />
     <VerificationRing
       delay={0}
+      highlighted={highlighted}
       radius={1.56}
       rotation={[1.02, 0.08, -0.18]}
       speed={0.19}
     />
     <VerificationRing
       delay={1}
+      highlighted={highlighted}
       radius={1.46}
       rotation={[0.5, 0.72, 0.56]}
       speed={-0.16}
     />
     <VerificationRing
       delay={2}
+      highlighted={highlighted}
       radius={1.36}
       rotation={[-0.58, 0.68, -0.5]}
       speed={0.14}
@@ -397,30 +412,84 @@ const OrbitFallback = () => (
   </div>
 );
 
-const VerificationOrbit = () => {
+interface VerificationOrbitProps {
+  isHighlighted?: boolean;
+}
+
+interface NetworkInformationWithSaveData extends EventTarget {
+  saveData?: boolean;
+}
+
+const VerificationOrbit = ({
+  isHighlighted = false,
+}: VerificationOrbitProps) => {
   const prefersReducedMotion = useReducedMotion();
+  const root = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const [saveDataEnabled, setSaveDataEnabled] = useState(false);
+  const [webglFailed, setWebglFailed] = useState(false);
+
+  useEffect(() => {
+    const element = root.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: '120px' },
+    );
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const connection = (
+      navigator as Navigator & { connection?: NetworkInformationWithSaveData }
+    ).connection;
+    if (!connection) return;
+
+    const updateSaveDataPreference = () =>
+      setSaveDataEnabled(Boolean(connection.saveData));
+    updateSaveDataPreference();
+    connection.addEventListener('change', updateSaveDataPreference);
+
+    return () =>
+      connection.removeEventListener('change', updateSaveDataPreference);
+  }, []);
+
+  const shouldUseFallback =
+    Boolean(prefersReducedMotion) || saveDataEnabled || webglFailed;
 
   return (
     <div
+      ref={root}
       className="relative aspect-square w-full"
       role="img"
       aria-label="A rotating obsidian icosahedron protected by three verification layers."
     >
-      {prefersReducedMotion ? (
+      {shouldUseFallback ? (
         <OrbitFallback />
       ) : (
         <Canvas
-          className="absolute inset-0"
+          className="verification-orbit-canvas absolute inset-0"
           camera={{ fov: 34, position: [0, 0, 6.25] }}
           dpr={[1, 1.5]}
           fallback={<OrbitFallback />}
+          frameloop={isVisible ? 'always' : 'demand'}
           gl={{
             alpha: true,
             antialias: true,
             powerPreference: 'high-performance',
           }}
+          onCreated={({ gl }) => {
+            gl.domElement.addEventListener(
+              'webglcontextlost',
+              () => setWebglFailed(true),
+              { once: true },
+            );
+          }}
         >
-          <OrbitScene />
+          <OrbitScene highlighted={isHighlighted} />
         </Canvas>
       )}
     </div>

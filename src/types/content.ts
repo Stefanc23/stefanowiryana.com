@@ -11,6 +11,43 @@ export interface Skill {
   name: string;
 }
 
+export type HeroNodeSlot =
+  | 'inner-north'
+  | 'inner-east'
+  | 'inner-south'
+  | 'inner-west'
+  | 'outer-northwest'
+  | 'outer-northeast'
+  | 'outer-southeast'
+  | 'outer-southwest';
+
+export interface HeroEvidence {
+  label: string;
+  value: string;
+}
+
+export interface HeroNode {
+  body: string;
+  category: string;
+  evidence: HeroEvidence[];
+  id: string;
+  slot?: HeroNodeSlot;
+  subtitle: string;
+  tags: string[];
+  title: string;
+}
+
+export interface HeroContent {
+  description: string;
+  eyebrow: string;
+  headlineAccent: string;
+  headlineLead: string;
+  nodes: HeroNode[];
+  overview: HeroNode;
+  primaryCtaLabel: string;
+  secondaryCtaLabel: string;
+}
+
 export interface AboutContent {
   bio: string;
   displayName: string;

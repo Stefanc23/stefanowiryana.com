@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+.verification-orbit-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -243,6 +248,103 @@ html.light {
   }
 }
 
+@keyframes hero-connector-flow {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+@keyframes hero-sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-drawer-enter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes hero-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-graph-ring {
+  fill: none;
+  stroke: rgba(166, 175, 189, 0.16);
+  stroke-width: 1;
+  stroke-dasharray: 3 8;
+  vector-effect: non-scaling-stroke;
+}
+
+.hero-graph-ring--inner {
+  stroke: rgba(245, 129, 72, 0.2);
+}
+
+.hero-graph-connector {
+  stroke: rgba(166, 175, 189, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 5 6;
+  transition:
+    stroke 0.25s ease,
+    stroke-width 0.25s ease,
+    opacity 0.25s ease;
+  vector-effect: non-scaling-stroke;
+  animation: hero-connector-flow 2.2s linear infinite;
+}
+
+.hero-graph-connector--active {
+  stroke: rgba(245, 129, 72, 0.95);
+  stroke-width: 1.75;
+  filter: drop-shadow(0 0 5px rgba(245, 129, 72, 0.75));
+}
+
+.hero-detail-dialog[open] {
+  animation: hero-sheet-enter 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-detail-dialog::backdrop {
+  animation: hero-backdrop-enter 0.25s ease-out;
+}
+
+@media (min-width: 768px) {
+  .hero-detail-dialog[open] {
+    animation-name: hero-drawer-enter;
+  }
+}
+
+.light .hero-graph-ring {
+  stroke: rgba(76, 87, 102, 0.22);
+}
+
+.light .hero-graph-ring--inner {
+  stroke: rgba(198, 83, 36, 0.24);
+}
+
+.light .hero-graph-connector {
+  stroke: rgba(76, 87, 102, 0.32);
+}
+
+.light .hero-graph-connector--active {
+  stroke: rgba(198, 83, 36, 0.92);
+}
+
 .orbit-fallback {
   position: absolute;
   inset: 11%;
@@ -331,6 +433,12 @@ html.light {
   }
 
   .orbit-fallback__ring {
+    animation: none;
+  }
+
+  .hero-graph-connector,
+  .hero-detail-dialog[open],
+  .hero-detail-dialog::backdrop {
     animation: none;
   }
 }
