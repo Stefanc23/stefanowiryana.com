@@ -1,7 +1,6 @@
 import {
   about as mockAbout,
   experiences as mockExperiences,
-  projects as mockProjects,
 } from '@/data/mockContent';
 import { isSanityConfigured } from '@/sanity/env';
 import { clientFetch } from '@/sanity/lib/client';
@@ -9,7 +8,6 @@ import type {
   AboutContent,
   Experience,
   PortfolioImage,
-  Project,
   Skill,
 } from '@/types/content';
 
@@ -46,25 +44,9 @@ interface SanityExperience {
   summary?: string;
 }
 
-interface SanityProject {
-  category?: string;
-  demoLink?: string;
-  description?: string;
-  featured?: boolean;
-  impact?: string;
-  image?: SanityImageAsset;
-  name?: string;
-  projectDate?: string;
-  repoLink?: string;
-  responsibility?: string;
-  sortOrder?: number;
-  technologies?: string[];
-}
-
 interface SanityPortfolioResponse {
   about?: SanityAbout;
   experiences?: SanityExperience[];
-  projects?: SanityProject[];
 }
 
 const portfolioQuery = `{
@@ -76,7 +58,7 @@ const portfolioQuery = `{
     "profileImage": profileImage.asset->{url, metadata{dimensions, lqip}},
     "resumeUrl": resumeFile.asset->url
   },
-  "experiences": *[_type == "experience"] | order(startDate desc){
+  "experiences": (*[_type == "experience"] | order(startDate desc)){
     role,
     company,
     startDate,
@@ -87,31 +69,8 @@ const portfolioQuery = `{
     summary,
     highlights,
     focusAreas
-  },
-  "projects": *[_type == "project"] | order(featured desc, sortOrder asc, name asc){
-    name,
-    category,
-    description,
-    featured,
-    impact,
-    projectDate,
-    responsibility,
-    sortOrder,
-    technologies,
-    "image": image.asset->{url, metadata{dimensions, lqip}},
-    repoLink,
-    demoLink
   }
 }`;
-
-const projectCategories: Record<string, Project['category']> = {
-  Cloud: 'Cloud',
-  Mobile: 'Product',
-  Other: 'Product',
-  Product: 'Product',
-  Security: 'Security',
-  Web: 'Web',
-};
 
 const toImage = (
   asset: SanityImageAsset | undefined,
@@ -140,7 +99,8 @@ const toAbout = (entry?: SanityAbout): AboutContent => {
   return {
     bio: entry.bio?.trim() || mockAbout.bio,
     displayName,
-    profileImage: toImage(entry.profileImage, displayName),
+    profileImage:
+      toImage(entry.profileImage, displayName) ?? mockAbout.profileImage,
     resumeUrl: entry.resumeUrl,
     skills: skills?.length ? skills : mockAbout.skills,
     tagline: entry.tagline?.trim() || mockAbout.tagline,
@@ -166,35 +126,14 @@ const toExperience = (entry: SanityExperience): Experience | null => {
   };
 };
 
-const toProject = (entry: SanityProject): Project | null => {
-  if (!entry.name || !entry.description) return null;
-
-  return {
-    category: projectCategories[entry.category ?? ''] ?? 'Product',
-    demoLink: entry.demoLink,
-    description: entry.description,
-    featured: entry.featured ?? false,
-    impact: entry.impact?.trim() || undefined,
-    image: toImage(entry.image, entry.name),
-    name: entry.name,
-    projectDate: entry.projectDate,
-    repoLink: entry.repoLink,
-    responsibility: entry.responsibility?.trim() || undefined,
-    sortOrder: entry.sortOrder,
-    technologies: entry.technologies ?? [],
-  };
-};
-
 export const getPortfolioContent = async (): Promise<{
   about: AboutContent;
   experiences: Experience[];
-  projects: Project[];
 }> => {
   if (!isSanityConfigured) {
     return {
       about: mockAbout,
       experiences: mockExperiences,
-      projects: mockProjects,
     };
   }
 
@@ -204,21 +143,15 @@ export const getPortfolioContent = async (): Promise<{
     const experiences = (sanityContent.experiences ?? [])
       .map(toExperience)
       .filter((entry): entry is Experience => entry !== null);
-    const projects = (sanityContent.projects ?? [])
-      .map(toProject)
-      .filter((entry): entry is Project => entry !== null);
-
     return {
       about: toAbout(sanityContent.about),
       experiences: experiences.length > 0 ? experiences : mockExperiences,
-      projects: projects.length > 0 ? projects : mockProjects,
     };
   } catch (error) {
     console.error('Sanity content fetch failed; using local fallback.', error);
     return {
       about: mockAbout,
       experiences: mockExperiences,
-      projects: mockProjects,
     };
   }
 };

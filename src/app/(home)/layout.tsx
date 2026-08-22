@@ -40,10 +40,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'Stefano Wiryana | Security Solution Engineer',
+        alt: 'Stefano Wiryana — Work built to make complex things clearer.',
       },
     ],
   },
@@ -52,19 +52,24 @@ export const metadata: Metadata = {
     title: 'Stefano Wiryana | Security Solution Engineer',
     description:
       'Security architecture, customer-facing technical consulting, and hands-on web development.',
-    images: ['/twitter-image'],
+    images: ['/og.png'],
   },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="scroll-smooth"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="font-sans">
         <Providers>
           <a className="skip-link" href="#main-content">
             Skip to content
           </a>
-          <div id="top" className="relative min-h-screen">
+          <div id="top" className="relative min-h-screen pb-24 md:pb-0">
             <FireBackground />
             <CursorGlow />
             <Header />

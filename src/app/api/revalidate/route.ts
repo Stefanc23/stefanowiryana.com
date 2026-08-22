@@ -12,10 +12,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { body, isValidSignature } = await parseBody<{ _type?: string }>(
-    request,
-    revalidationSecret,
-  );
+  const { body, isValidSignature } = await parseBody<{
+    _type?: string;
+    slug?: { current?: string };
+  }>(request, revalidationSecret);
 
   if (!isValidSignature) {
     return NextResponse.json(
@@ -27,6 +27,18 @@ export async function POST(request: NextRequest) {
   revalidateTag('sanity-content', 'max');
   revalidatePath('/');
   revalidatePath('/resume');
+
+  if (body?._type === 'project') {
+    revalidateTag('sanity-projects', 'max');
+    revalidatePath('/dev');
+    revalidatePath('/projects/[slug]', 'page');
+    revalidatePath('/sitemap.xml');
+
+    if (body.slug?.current) {
+      revalidateTag(`sanity-project-${body.slug.current}`, 'max');
+      revalidatePath(`/projects/${body.slug.current}`);
+    }
+  }
 
   return NextResponse.json({
     documentType: body?._type ?? null,

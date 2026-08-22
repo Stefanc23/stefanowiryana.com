@@ -1,25 +1,16 @@
-'use client';
-
-import { useReducedMotion } from 'motion/react';
 import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
+
+const embers = Array.from({ length: 30 }, (_, id) => ({
+  id,
+  delay: `${(id % 13) * 0.55}s`,
+  duration: `${8 + (id % 8) * 0.75}s`,
+  drift: `${id % 2 === 0 ? 1 : -1}${10 + (id % 4) * 8}px`,
+  left: `${(id * 31) % 100}%`,
+  opacity: 0.25 + (id % 4) * 0.12,
+  size: `${id % 5 === 0 ? 4 : 2 + (id % 2)}px`,
+}));
 
 const FireBackground = () => {
-  const prefersReducedMotion = useReducedMotion();
-  const embers = useMemo(
-    () =>
-      Array.from({ length: prefersReducedMotion ? 0 : 30 }, (_, id) => ({
-        id,
-        delay: `${(id % 13) * 0.55}s`,
-        duration: `${8 + (id % 8) * 0.75}s`,
-        drift: `${id % 2 === 0 ? 1 : -1}${10 + (id % 4) * 8}px`,
-        left: `${(id * 31) % 100}%`,
-        opacity: 0.25 + (id % 4) * 0.12,
-        size: `${id % 5 === 0 ? 4 : 2 + (id % 2)}px`,
-      })),
-    [prefersReducedMotion],
-  );
-
   return (
     <div
       className="fire-field pointer-events-none fixed inset-0 z-0 overflow-hidden"
@@ -28,7 +19,7 @@ const FireBackground = () => {
       {embers.map((ember) => (
         <span
           key={ember.id}
-          className="absolute bottom-[-1rem] rounded-full bg-primary"
+          className="absolute bottom-[-1rem] rounded-full bg-primary motion-reduce:hidden"
           style={
             {
               animation: `ember-rise ${ember.duration} linear infinite`,

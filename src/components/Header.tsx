@@ -3,7 +3,8 @@
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { HiMenuAlt3, HiOutlineMail, HiX } from 'react-icons/hi';
 
@@ -16,16 +17,18 @@ import {
 } from '@/utils/sectionNavigation';
 
 const navItems = [
-  { href: '#about', label: 'About' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#contact', label: 'Contact' },
+  { hash: '#about', href: '/#about', label: 'About' },
+  { hash: '#experience', href: '/#experience', label: 'Experience' },
+  { hash: '#projects', href: '/#projects', label: 'Projects' },
+  { hash: '#contact', href: '/#contact', label: 'Contact' },
 ];
 
 const Header = () => {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const displayedActiveSection = pathname === '/' ? activeSection : '';
 
   useEffect(() => {
     const updateHeader = () => setScrolled(window.scrollY > 24);
@@ -49,13 +52,15 @@ const Header = () => {
   }, [expanded]);
 
   useEffect(() => {
+    if (pathname !== '/') return;
+
     const sections = navItems
-      .map(({ href }) => ({
-        href,
-        heading: document.querySelector<HTMLElement>(href),
+      .map(({ hash }) => ({
+        hash,
+        heading: document.querySelector<HTMLElement>(hash),
       }))
-      .map(({ href, heading }) => ({
-        href,
+      .map(({ hash, heading }) => ({
+        hash,
         heading,
         root: heading?.closest<HTMLElement>('section') ?? heading,
       }))
@@ -63,7 +68,7 @@ const Header = () => {
         (
           section,
         ): section is {
-          href: string;
+          hash: string;
           heading: HTMLElement;
           root: HTMLElement;
         } => section.heading !== null,
@@ -98,7 +103,7 @@ const Header = () => {
         crossedSections.at(-1) ??
         null;
 
-      setActiveSection(currentSection?.href ?? '');
+      setActiveSection(currentSection?.hash ?? '');
       frame = 0;
     };
 
@@ -131,7 +136,17 @@ const Header = () => {
       );
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [pathname]);
+
+  const handleSectionNavigation = (
+    event: MouseEvent<HTMLAnchorElement>,
+    hash: string,
+  ) => {
+    if (pathname !== '/') return;
+
+    event.preventDefault();
+    navigateToSection(hash);
+  };
 
   const closeMenu = () => setExpanded(false);
 
@@ -147,12 +162,11 @@ const Header = () => {
       <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between">
         <motion.div variants={fadeIn('right', 'spring', 0.1, 0.5)}>
           <Link
-            href="#top"
+            href="/#top"
             className="group flex items-center gap-3"
             aria-label="Back to top"
             onClick={(event) => {
-              event.preventDefault();
-              navigateToSection('#top');
+              handleSectionNavigation(event, '#top');
             }}
           >
             <Image
@@ -177,16 +191,17 @@ const Header = () => {
                 <Link
                   href={item.href}
                   aria-current={
-                    activeSection === item.href ? 'location' : undefined
+                    displayedActiveSection === item.hash
+                      ? 'location'
+                      : undefined
                   }
                   className={`block rounded-lg px-3 py-2 text-sm transition ${
-                    activeSection === item.href
+                    displayedActiveSection === item.hash
                       ? 'bg-light text-dark'
                       : 'text-light/65 hover:bg-light/10 hover:text-light'
                   }`}
                   onClick={(event) => {
-                    event.preventDefault();
-                    navigateToSection(item.href);
+                    handleSectionNavigation(event, item.hash);
                   }}
                 >
                   {item.label}
@@ -262,16 +277,15 @@ const Header = () => {
                 key={item.href}
                 href={item.href}
                 aria-current={
-                  activeSection === item.href ? 'location' : undefined
+                  displayedActiveSection === item.hash ? 'location' : undefined
                 }
                 className={`block rounded-xl px-4 py-3 text-sm transition ${
-                  activeSection === item.href
+                  displayedActiveSection === item.hash
                     ? 'bg-light text-dark'
                     : 'text-light/75 hover:bg-light/10 hover:text-light'
                 }`}
                 onClick={(event) => {
-                  event.preventDefault();
-                  navigateToSection(item.href);
+                  handleSectionNavigation(event, item.hash);
                   closeMenu();
                 }}
               >

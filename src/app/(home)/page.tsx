@@ -2,7 +2,7 @@ import About from '@/components/About';
 import Contact from '@/components/Contact';
 import Experience from '@/components/Experience';
 import Hero from '@/components/Hero';
-import Projects from '@/components/Projects';
+import ProjectsWip from '@/components/ProjectsWip';
 import { getPortfolioContent } from '@/data/portfolioContent';
 
 export default async function Home() {
@@ -13,7 +13,7 @@ export default async function Home() {
       <Hero />
       <About data={about} />
       <Experience data={experiences} />
-      <Projects />
+      <ProjectsWip />
       <Contact />
     </>
   );

@@ -32,17 +32,53 @@ export interface Experience {
   focusAreas: string[];
 }
 
-export interface Project {
-  name: string;
-  category: 'Security' | 'Web' | 'Cloud' | 'Product';
+export type ProjectCategory =
+  | 'Security'
+  | 'Solution Engineering'
+  | 'Cloud'
+  | 'Web Development'
+  | 'Product'
+  | 'Research';
+
+export interface ProjectImage extends PortfolioImage {
+  caption?: string;
+}
+
+export interface ProjectApproachStep {
   description: string;
-  featured?: boolean;
-  impact?: string;
-  image?: PortfolioImage;
-  projectDate?: string;
-  responsibility?: string;
-  sortOrder?: number;
+  title: string;
+}
+
+export interface ProjectMetric {
+  label: string;
+  value: string;
+}
+
+export interface ProjectSummary {
+  _updatedAt?: string;
+  category: ProjectCategory;
+  coverImage?: ProjectImage;
+  featured: boolean;
+  projectDate: string;
+  role: string;
+  slug: string;
+  sortOrder: number;
+  summary: string;
   technologies: string[];
-  repoLink?: string;
-  demoLink?: string;
+  title: string;
+}
+
+export interface ProjectDetail extends ProjectSummary {
+  approach: ProjectApproachStep[];
+  challenge: string;
+  confidentialityNote?: string;
+  duration: string;
+  gallery: ProjectImage[];
+  learnings: string[];
+  liveUrl?: string;
+  metrics: ProjectMetric[];
+  outcomes: string[];
+  projectContext: string;
+  repositoryUrl?: string;
+  solution: string;
 }

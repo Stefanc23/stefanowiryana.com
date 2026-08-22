@@ -9,14 +9,18 @@ export const client = createClient({
   useCdn,
 });
 
-export const clientFetch = <QueryResponse>(query: string) =>
-  client.fetch<QueryResponse>(
-    query,
-    {},
-    {
-      next: {
-        revalidate: 3600,
-        tags: ['sanity-content'],
-      },
+interface ClientFetchOptions {
+  params?: Record<string, unknown>;
+  tags?: string[];
+}
+
+export const clientFetch = <QueryResponse>(
+  query: string,
+  { params = {}, tags = ['sanity-content'] }: ClientFetchOptions = {},
+) =>
+  client.fetch<QueryResponse>(query, params, {
+    next: {
+      revalidate: 3600,
+      tags,
     },
-  );
+  });

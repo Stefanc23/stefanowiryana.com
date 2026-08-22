@@ -48,13 +48,13 @@ const Contact = () => {
       intro="For security, cloud, and web work that needs both ingenuity and taste."
       className="pb-28"
     >
-      <div className="etched-border grid gap-8 bg-gradient-to-br from-light/[0.06] to-primary/10 p-6 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10">
-        <div className="relative">
+      <div className="etched-border grid min-w-0 gap-8 overflow-hidden bg-gradient-to-br from-light/[0.06] to-primary/10 p-6 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10">
+        <div className="relative min-w-0">
           <p className="max-w-2xl text-lg leading-8 text-light/76">
             I work where security architecture, customer discovery, and frontend
             execution need to meet in one clear solution.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-5">
+          <div className="mt-8 flex min-w-0 flex-wrap items-center gap-5">
             <Button
               href="mailto:stefanowiryana@gmail.com"
               onPointerEnter={() => setIsCtaHovered(true)}
@@ -70,7 +70,7 @@ const Contact = () => {
             />
           </div>
         </div>
-        <ul className="grid gap-3">
+        <ul className="grid min-w-0 gap-3">
           {links.map(({ href, icon: Icon, label, value }) => (
             <li key={href}>
               <a
